@@ -173,11 +173,11 @@ func _on_cancel_pressed() -> void:
 ## Get origin stage name
 func _get_origin_name(origin: int) -> String:
 	match origin:
-		DigimonTower.STAGE_IN_TRAINING: return "In-Training"
-		DigimonTower.STAGE_ROOKIE: return "Rookie"
-		DigimonTower.STAGE_CHAMPION: return "Champion"
-		DigimonTower.STAGE_ULTIMATE: return "Ultimate"
-		DigimonTower.STAGE_MEGA: return "Mega"
+		GameConfig.STAGE_IN_TRAINING: return "In-Training"
+		GameConfig.STAGE_ROOKIE: return "Rookie"
+		GameConfig.STAGE_CHAMPION: return "Champion"
+		GameConfig.STAGE_ULTIMATE: return "Ultimate"
+		GameConfig.STAGE_MEGA: return "Mega"
 		_: return "Unknown"
 
 

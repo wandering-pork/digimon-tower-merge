@@ -203,7 +203,7 @@ func _get_cannot_digivolve_reason(tower: DigimonTower) -> String:
 	if tower.current_level < tower.get_digivolve_threshold():
 		return "Need level %d to digivolve" % tower.get_digivolve_threshold()
 
-	if tower.digimon_data.stage >= DigimonTower.STAGE_MEGA:
+	if tower.digimon_data.stage >= GameConfig.STAGE_MEGA:
 		return "Already at maximum stage"
 
 	if tower.is_at_origin_cap():

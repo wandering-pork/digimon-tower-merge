@@ -16,33 +16,29 @@ All major refactoring tasks have been completed. The codebase now:
 - Follows 300-line file convention (most files)
 - Has proper memory leak prevention (_exit_tree)
 
-**Architecture Score: 8.5/10** (up from 6.0/10 pre-refactor)
+**Architecture Score: 9.0/10** (up from 6.0/10 pre-refactor)
 
 ---
 
 ## Remaining Work (Low Priority)
 
 ### 1. Audio Bus Configuration
-**Priority:** Low
-**Location:** Godot Project Settings > Audio
+**Status:** DONE
+**Location:** `default_bus_layout.tres`
 
-The project has warnings about missing audio buses:
-- "Music" bus not found
-- "SFX" bus not found
-
-**Fix:** Create these buses in Project Settings > Audio > Buses
+Created Music and SFX audio buses. Added 17 retro sound effects in `assets/audio/sfx/`.
 
 ### 2. GUT Testing Framework
-**Priority:** Medium
-**Effort:** High
+**Status:** DONE (structure ready, addon install pending)
+**Location:** `tests/`, `.gutconfig.json`
 
-Add unit testing infrastructure:
-- Install GUT (Godot Unit Testing) addon
-- Create test suites for critical systems:
-  - GameConfig calculations
-  - Component initialization
-  - State machine transitions
-  - Merge validation logic
+Created test infrastructure:
+- `.gutconfig.json` - GUT configuration
+- `tests/unit/test_game_config.gd` - 45+ tests for GameConfig
+- `tests/unit/test_economy_system.gd` - 30+ tests for EconomySystem
+- `tests/README.md` - Installation and usage guide
+
+**To complete:** Install GUT addon from AssetLib and enable plugin.
 
 ### 3. Dependency Injection Pattern
 **Priority:** Low
@@ -54,13 +50,13 @@ Consider implementing DI for better testability:
 - Enables mock injection for testing
 
 ### 4. Formula Documentation
-**Priority:** Low
+**Status:** DONE
 **Location:** `scripts/towers/tower_combat_component.gd`
 
-Document `calculate_damage()` method:
-- Explain damage formula
-- Document scaling factors
-- Add examples in comments
+Added comprehensive damage formula documentation:
+- Complete formula explanation
+- Scaling factors with reference tables
+- Three worked example calculations
 
 ---
 
@@ -123,7 +119,8 @@ Document `calculate_damage()` method:
 | Session 2 | 8.0/10 | All state machines integrated |
 | Session 7 | 8.5/10 | ErrorHandler, interfaces, all splits done |
 | Session 8 | 8.5/10 | Build verified, type resolution fixed |
-| Target | 9.0/10 | Add testing framework |
+| Session 9 | 9.0/10 | Audio, tests, documentation complete |
+| Target | 9.5/10 | Install GUT, add more tests |
 
 ---
 

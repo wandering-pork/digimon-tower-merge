@@ -97,6 +97,12 @@ func _exit_tree() -> void:
 	_spawn_system = null
 
 
+## Handle spawn menu closed - cancel placement if active
+func _on_spawn_menu_closed() -> void:
+	if _is_placing:
+		cancel_placement()
+
+
 func _setup_ghost_container() -> void:
 	_ghost_container = Node2D.new()
 	_ghost_container.name = "GhostContainer"

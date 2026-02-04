@@ -16,7 +16,7 @@ All major refactoring tasks have been completed. The codebase now:
 - Follows 300-line file convention (most files)
 - Has proper memory leak prevention (_exit_tree)
 
-**Architecture Score: 9.0/10** (up from 6.0/10 pre-refactor)
+**Architecture Score: 9.2/10** (up from 6.0/10 pre-refactor)
 
 ---
 
@@ -120,11 +120,12 @@ Added comprehensive damage formula documentation:
 | Session 7 | 8.5/10 | ErrorHandler, interfaces, all splits done |
 | Session 8 | 8.5/10 | Build verified, type resolution fixed |
 | Session 9 | 9.0/10 | Audio, tests, documentation complete |
+| Session 10 | 9.2/10 | Critical fixes, file splits, typed arrays |
 | Target | 9.5/10 | Install GUT, add more tests |
 
 ---
 
-## Files Created During Refactoring (30 total)
+## Files Created During Refactoring (33 total)
 
 ### Autoloads
 - `scripts/autoload/game_config.gd` - Centralized game constants
@@ -140,6 +141,8 @@ Added comprehensive damage formula documentation:
 - `scripts/enemies/enemy_state_machine.gd` - Enemy state management
 - `scripts/enemies/enemy_effects_component.gd` - Status effects handling
 - `scripts/enemies/enemy_combat_component.gd` - Combat and HP
+- `scripts/enemies/enemy_movement_component.gd` - Path following and knockback
+- `scripts/enemies/enemy_splitter_component.gd` - Split enemy spawning
 
 ### Tower Components
 - `scripts/towers/tower_combat_component.gd` - Targeting and attacking
@@ -153,6 +156,7 @@ Added comprehensive damage formula documentation:
 - `scripts/systems/wave_config_database.gd` - Wave definitions
 - `scripts/systems/enemy_composition.gd` - Enemy group building
 - `scripts/systems/wave_modifier_system.gd` - Late game modifiers
+- `scripts/systems/wave_reward_calculator.gd` - Reward calculations
 - `scripts/systems/path_manager.gd` - Path and waypoints
 
 ### Combat System

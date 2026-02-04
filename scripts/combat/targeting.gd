@@ -25,7 +25,7 @@ static func get_target(tower: Node2D, enemies: Array, priority: Priority) -> Nod
 		return null
 
 	# Filter out invalid references and dead enemies
-	var valid_enemies: Array = []
+	var valid_enemies: Array[Node2D] = []
 	for enemy in enemies:
 		if is_instance_valid(enemy) and not enemy.is_dead:
 			valid_enemies.append(enemy)
@@ -117,8 +117,8 @@ static func sort_by_closest(a: Node2D, b: Node2D, tower: Node2D) -> bool:
 
 
 ## Filter to only flying enemies
-static func filter_flying(enemies: Array) -> Array:
-	var flying: Array = []
+static func filter_flying(enemies: Array) -> Array[Node2D]:
+	var flying: Array[Node2D] = []
 	for enemy in enemies:
 		if is_instance_valid(enemy) and enemy.has_method("is_flying") and enemy.is_flying():
 			flying.append(enemy)
@@ -126,8 +126,8 @@ static func filter_flying(enemies: Array) -> Array:
 
 
 ## Filter enemies within a specific range from a position
-static func filter_in_range(enemies: Array, position: Vector2, attack_range: float) -> Array:
-	var in_range: Array = []
+static func filter_in_range(enemies: Array, position: Vector2, attack_range: float) -> Array[Node2D]:
+	var in_range: Array[Node2D] = []
 	var range_squared = attack_range * attack_range
 
 	for enemy in enemies:
@@ -140,8 +140,8 @@ static func filter_in_range(enemies: Array, position: Vector2, attack_range: flo
 
 
 ## Get enemies sorted by distance from a position
-static func get_enemies_by_distance(enemies: Array, position: Vector2) -> Array:
-	var valid_enemies: Array = []
+static func get_enemies_by_distance(enemies: Array, position: Vector2) -> Array[Node2D]:
+	var valid_enemies: Array[Node2D] = []
 	for enemy in enemies:
 		if is_instance_valid(enemy) and not enemy.is_dead:
 			valid_enemies.append(enemy)
@@ -156,7 +156,7 @@ static func get_enemies_by_distance(enemies: Array, position: Vector2) -> Array:
 
 
 ## Get the closest N enemies to a position
-static func get_closest_n_enemies(enemies: Array, position: Vector2, count: int) -> Array:
+static func get_closest_n_enemies(enemies: Array, position: Vector2, count: int) -> Array[Node2D]:
 	var sorted = get_enemies_by_distance(enemies, position)
 	return sorted.slice(0, mini(count, sorted.size()))
 

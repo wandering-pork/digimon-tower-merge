@@ -30,7 +30,7 @@ signal projectile_fired(projectile: Projectile, source: Node, target: Node)
 const TILE_SIZE: float = 64.0
 
 ## Track all active projectiles
-var active_projectiles: Array = []
+var active_projectiles: Array[Node2D] = []
 
 ## Reference to the current level/game scene
 var _current_level: Node = null
@@ -43,7 +43,7 @@ var _damage_processor: CombatDamageProcessor = null
 
 ## Cached list of active enemies - updated via EventBus signals
 ## Provides O(1) access instead of O(n) tree traversal
-var _cached_enemies: Array = []
+var _cached_enemies: Array[Node] = []
 
 ## Flag to track if cache is initialized
 var _cache_initialized: bool = false
@@ -167,14 +167,14 @@ func instant_damage(
 # =============================================================================
 
 ## Get all enemies in range of a position (tile-based)
-func get_enemies_in_range(position: Vector2, attack_range: float) -> Array:
+func get_enemies_in_range(position: Vector2, attack_range: float) -> Array[Node]:
 	var range_pixels = attack_range * TILE_SIZE
 	return get_enemies_in_radius(position, range_pixels)
 
 
 ## Get all enemies within a pixel radius
-func get_enemies_in_radius(position: Vector2, radius: float) -> Array:
-	var enemies: Array = []
+func get_enemies_in_radius(position: Vector2, radius: float) -> Array[Node]:
+	var enemies: Array[Node] = []
 	var all_enemies = get_all_enemies()
 	var radius_squared = radius * radius
 
@@ -188,15 +188,15 @@ func get_enemies_in_radius(position: Vector2, radius: float) -> Array:
 
 
 ## Get all active enemies in the scene (uses cached list for O(1) access)
-func get_all_enemies() -> Array:
+func get_all_enemies() -> Array[Node]:
 	if _cache_initialized:
 		return _cached_enemies.duplicate()
 	# Fallback to tree traversal if cache not initialized
-	return get_tree().get_nodes_in_group("enemies")
+	return get_tree().get_nodes_in_group("enemies").duplicate()
 
 
 ## Get all active towers in the scene
-func get_all_towers() -> Array:
+func get_all_towers() -> Array[Node]:
 	return get_tree().get_nodes_in_group("towers")
 
 
@@ -259,7 +259,7 @@ func set_current_level(level: Node) -> void:
 
 ## Clean up destroyed projectiles from tracking array
 func _cleanup_projectiles() -> void:
-	var valid: Array = []
+	var valid: Array[Node2D] = []
 	for proj in active_projectiles:
 		if is_instance_valid(proj):
 			valid.append(proj)

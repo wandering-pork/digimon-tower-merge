@@ -12,14 +12,14 @@ var _combat_system: Node = null
 ## Pierce state
 var pierce_count: int = 0
 var max_pierce: int = 3
-var pierced_enemies: Array = []
+var pierced_enemies: Array[Node] = []
 
 ## Chain state
 var chain_count: int = 0
 var max_chains: int = 3
 var chain_damage_falloff: float = 0.5
 var chain_range: float = 128.0
-var chained_enemies: Array = []
+var chained_enemies: Array[Node] = []
 
 
 ## Initialize the behavior component
@@ -144,7 +144,7 @@ func find_chain_target(current_enemy: Node) -> Node:
 	var nearby = get_enemies_in_radius(current_enemy.global_position, chain_range)
 
 	# Filter out already chained enemies
-	var valid_targets: Array = []
+	var valid_targets: Array[Node] = []
 	for enemy in nearby:
 		if is_instance_valid(enemy) and not chained_enemies.has(enemy):
 			valid_targets.append(enemy)
@@ -187,9 +187,9 @@ func find_new_target(from_position: Vector2, search_radius: float) -> Node:
 
 
 ## Get all enemies in a radius
-func get_enemies_in_radius(center: Vector2, radius: float) -> Array:
-	var enemies: Array = []
-	var all_enemies: Array = []
+func get_enemies_in_radius(center: Vector2, radius: float) -> Array[Node]:
+	var enemies: Array[Node] = []
+	var all_enemies: Array[Node] = []
 
 	if _combat_system and _combat_system.has_method("get_all_enemies"):
 		all_enemies = _combat_system.get_all_enemies()

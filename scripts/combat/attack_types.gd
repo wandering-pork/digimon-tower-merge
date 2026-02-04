@@ -34,11 +34,11 @@ static var _projectile_scene: PackedScene = null
 ## target: The primary target enemy
 ## attack_type: The type of attack to perform
 ## Returns: Array of created projectiles (empty for instant attacks)
-static func perform_attack(tower: Node, target: Node, attack_type: Type) -> Array:
+static func perform_attack(tower: Node, target: Node, attack_type: Type) -> Array[Node2D]:
 	if not is_instance_valid(tower) or not is_instance_valid(target):
 		return []
 
-	var projectiles: Array = []
+	var projectiles: Array[Node2D] = []
 
 	match attack_type:
 		Type.SINGLE:
@@ -62,7 +62,7 @@ static func perform_attack(tower: Node, target: Node, attack_type: Type) -> Arra
 
 
 ## Create a single projectile attack
-static func _attack_single(tower: Node, target: Node) -> Array:
+static func _attack_single(tower: Node, target: Node) -> Array[Node2D]:
 	var projectile = _create_projectile(tower, target)
 	if projectile:
 		projectile.attack_type = Projectile.AttackType.SINGLE
@@ -71,7 +71,7 @@ static func _attack_single(tower: Node, target: Node) -> Array:
 
 
 ## Create a piercing projectile attack
-static func _attack_pierce(tower: Node, target: Node) -> Array:
+static func _attack_pierce(tower: Node, target: Node) -> Array[Node2D]:
 	var projectile = _create_projectile(tower, target)
 	if projectile:
 		projectile.attack_type = Projectile.AttackType.PIERCE

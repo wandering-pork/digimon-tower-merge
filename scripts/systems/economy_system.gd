@@ -14,6 +14,7 @@ extends Node
 
 const DigimonTower = preload("res://scripts/towers/digimon_tower.gd")
 const DigimonData = preload("res://scripts/data/digimon_data.gd")
+const WaveRewardCalculator = preload("res://scripts/systems/wave_reward_calculator.gd")
 
 signal purchase_failed(reason: String)
 signal purchase_succeeded(item_type: String, cost: int)
@@ -190,13 +191,11 @@ func get_cost_to_max_level(tower: Node) -> int:
 	return total
 
 
-## Get wave completion reward based on wave number
+## Get wave completion reward based on wave number (with endless scaling)
 func get_wave_reward(wave_number: int) -> int:
-	var reward_values = GameConfig.get_wave_reward_values(wave_number)
-	return reward_values["base"]
+	return WaveRewardCalculator.calculate_base_reward(wave_number)
 
 
-## Get per-kill reward based on wave number
+## Get per-kill reward based on wave number (with endless scaling)
 func get_kill_reward(wave_number: int) -> int:
-	var reward_values = GameConfig.get_wave_reward_values(wave_number)
-	return reward_values["per_kill"]
+	return WaveRewardCalculator.calculate_kill_reward(wave_number)

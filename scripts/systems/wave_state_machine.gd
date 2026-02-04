@@ -50,6 +50,19 @@ const STATE_NAMES: Dictionary = {
 	State.DEFEAT: "Defeat",
 }
 
+## Valid state transitions - defines which states can transition to which other states.
+## DEFEAT can be reached from any non-terminal state (handled separately in _is_valid_transition).
+const VALID_TRANSITIONS: Dictionary = {
+	State.IDLE: [State.COUNTDOWN, State.BOSS_INCOMING],
+	State.COUNTDOWN: [State.SPAWNING],
+	State.SPAWNING: [State.IN_PROGRESS],
+	State.IN_PROGRESS: [State.INTERMISSION, State.VICTORY, State.DEFEAT],
+	State.INTERMISSION: [State.COUNTDOWN, State.BOSS_INCOMING, State.VICTORY],
+	State.BOSS_INCOMING: [State.SPAWNING],
+	State.VICTORY: [State.IDLE],
+	State.DEFEAT: [State.IDLE]
+}
+
 
 func _ready() -> void:
 	set_process(true)
@@ -143,30 +156,15 @@ func _update_timed_state() -> void:
 
 ## Validates if a transition from one state to another is allowed.
 func _is_valid_transition(from_state: State, to_state: State) -> bool:
-	# DEFEAT and VICTORY are terminal states - can only reset to IDLE
-	if from_state == State.DEFEAT or from_state == State.VICTORY:
-		return to_state == State.IDLE
-
 	# DEFEAT can be reached from any non-terminal state
 	if to_state == State.DEFEAT:
-		return true
+		return from_state != State.DEFEAT and from_state != State.VICTORY
 
-	# Define valid transitions
-	match from_state:
-		State.IDLE:
-			return to_state in [State.COUNTDOWN, State.BOSS_INCOMING]
-		State.COUNTDOWN:
-			return to_state in [State.SPAWNING]
-		State.SPAWNING:
-			return to_state in [State.IN_PROGRESS]
-		State.IN_PROGRESS:
-			return to_state in [State.INTERMISSION, State.VICTORY]
-		State.INTERMISSION:
-			return to_state in [State.COUNTDOWN, State.BOSS_INCOMING, State.IDLE]
-		State.BOSS_INCOMING:
-			return to_state in [State.COUNTDOWN, State.SPAWNING]
-		_:
-			return false
+	# Check if transition is in the valid transitions dictionary
+	if not VALID_TRANSITIONS.has(from_state):
+		return false
+
+	return to_state in VALID_TRANSITIONS[from_state]
 
 
 ## Returns the human-readable name for a state.

@@ -64,9 +64,19 @@ const COMMON_SFX: Array[String] = [
 
 
 func _ready() -> void:
+	_verify_audio_buses()
 	_setup_audio_players()
 	_preload_common_sounds()
 	_initialize_volume_settings()
+
+
+## Verifies that required audio buses exist at startup
+func _verify_audio_buses() -> void:
+	var required_buses = [MASTER_BUS, MUSIC_BUS, SFX_BUS]
+	for bus_name in required_buses:
+		if AudioServer.get_bus_index(bus_name) == -1:
+			ErrorHandler.log_error("AudioManager",
+				"Missing audio bus: %s. Configure in default_bus_layout.tres" % bus_name)
 
 
 ## Sets up the music player and SFX player pool

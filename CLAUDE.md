@@ -91,13 +91,14 @@ project/
 - `enemy_combat_component.gd` - Damage handling, HP, death
 
 ### Wave System (scripts/systems/)
-- `wave_manager.gd` - State orchestration, wave flow, rewards, signal handling (~280 lines)
+- `wave_manager.gd` - State orchestration, wave flow, signal handling (~280 lines)
 - `wave_spawner.gd` - Enemy instantiation, spawn timing, spawn queue management (~190 lines)
 - `wave_state_machine.gd` - States: IDLE, COUNTDOWN, SPAWNING, IN_PROGRESS, INTERMISSION, BOSS_INCOMING, VICTORY, DEFEAT
 - `wave_generator.gd` - Main wave generation interface
 - `wave_config_database.gd` - Wave definitions and enemy pools
 - `enemy_composition.gd` - Enemy group building logic
 - `wave_modifier_system.gd` - Wave 50+ modifiers and endless scaling
+- `wave_reward_calculator.gd` - Static utility for reward calculations, endless mode multipliers
 
 ### Combat System (scripts/combat/ & scripts/systems/)
 - `combat_system.gd` - Main combat coordinator (facade pattern)
@@ -411,7 +412,12 @@ For detailed design documents, see the `docs/` folder:
 |-------|--------|---------------|
 | Split wave_manager.gd | DONE | wave_manager.gd (~280 lines), wave_spawner.gd (~190 lines, new) |
 
-### New Files Created (30 total)
+### Completed Fixes - Session 9 (Reward Calculator Extraction)
+| Issue | Status | Files Changed |
+|-------|--------|---------------|
+| Extract reward calculator | DONE | wave_reward_calculator.gd (new), wave_manager.gd, economy_system.gd |
+
+### New Files Created (31 total)
 ```
 scripts/autoload/game_config.gd              # Centralized constants
 scripts/autoload/error_handler.gd            # Centralized error logging
@@ -427,6 +433,7 @@ scripts/systems/wave_spawner.gd              # Enemy instantiation and spawn tim
 scripts/systems/wave_config_database.gd      # Wave definitions
 scripts/systems/enemy_composition.gd         # Enemy group building
 scripts/systems/wave_modifier_system.gd      # Late game modifiers
+scripts/systems/wave_reward_calculator.gd    # Wave reward calculations and endless scaling
 scripts/systems/path_manager.gd              # Path initialization, waypoints, navigation
 scripts/towers/tower_combat_component.gd     # Tower combat
 scripts/towers/tower_progression_component.gd # Tower progression

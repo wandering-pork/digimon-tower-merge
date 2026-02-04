@@ -15,6 +15,8 @@ const EnemyModifier = preload("res://scripts/enemies/enemy_modifier.gd")
 const EnemyStateMachine = preload("res://scripts/enemies/enemy_state_machine.gd")
 const EnemyEffectsComponent = preload("res://scripts/enemies/enemy_effects_component.gd")
 const EnemyCombatComponent = preload("res://scripts/enemies/enemy_combat_component.gd")
+const EnemySplitterComponent = preload("res://scripts/enemies/enemy_splitter_component.gd")
+const EnemyMovementComponent = preload("res://scripts/enemies/enemy_movement_component.gd")
 const TraitEffect = preload("res://scripts/data/trait_effect.gd")
 
 ## Emitted when the enemy dies
@@ -32,14 +34,6 @@ signal hp_changed(current: float, maximum: float)
 ## Reference to GridManager for path navigation
 var grid_manager: Node = null
 
-## Path following
-var path_index: int = 0
-var path_waypoints: Array[Vector2] = []
-
-## Cached path data for O(1) progress calculations
-var _cached_path_length: float = 0.0
-var _cached_waypoint_distances: Array[float] = []
-
 ## Base movement speed (pixels per second at 1.0x speed)
 var base_move_speed: float = 100.0
 
@@ -50,9 +44,6 @@ var wave_scale: float = 1.0
 var modifier_type: EnemyModifier.ModifierType = EnemyModifier.ModifierType.NONE
 var _modifier_stats: Dictionary = {}
 
-## For splitter enemies - the data to use for split children
-var split_enemy_data: EnemyData = null
-
 ## Node references
 @onready var sprite: Sprite2D = $Sprite
 @onready var health_bar: ProgressBar = $HealthBar
@@ -62,6 +53,8 @@ var split_enemy_data: EnemyData = null
 var state_machine: EnemyStateMachine
 var effects_component: EnemyEffectsComponent
 var combat_component: EnemyCombatComponent
+var splitter_component: EnemySplitterComponent
+var movement_component: EnemyMovementComponent
 
 
 func _ready() -> void:
@@ -70,16 +63,14 @@ func _ready() -> void:
 	if enemy_data:
 		_initialize_from_data()
 
-	# Find GridManager in the scene
+	# Find GridManager and setup movement
 	var level = get_tree().get_first_node_in_group("level")
 	if level and level.has_node("GridManager"):
 		grid_manager = level.get_node("GridManager")
-		path_waypoints = grid_manager.get_path_waypoints()
-
-	# Set initial position to spawn point
-	if path_waypoints.size() > 0:
-		global_position = path_waypoints[0]
-		_cache_path_data()
+		var waypoints = grid_manager.get_path_waypoints()
+		if movement_component:
+			movement_component.setup(self, waypoints, effects_component, sprite)
+			movement_component.set_to_spawn()
 
 	# Start moving
 	if state_machine:
@@ -94,8 +85,10 @@ func _process(delta: float) -> void:
 	_process_regen(delta)
 
 	# Handle movement based on state
-	if not state_machine.is_movement_blocked():
-		_follow_path(delta)
+	if not state_machine.is_movement_blocked() and movement_component:
+		var speed_mult = enemy_data.get_effective_speed() if enemy_data else 1.0
+		var modifier_mult = _modifier_stats.get("speed_mult", 1.0)
+		movement_component.follow_path(delta, base_move_speed, speed_mult, modifier_mult)
 
 
 ## Setup component nodes.
@@ -121,6 +114,20 @@ func _setup_components() -> void:
 		combat_component.name = "EnemyCombatComponent"
 		add_child(combat_component)
 
+	# Create or get splitter component
+	splitter_component = get_node_or_null("EnemySplitterComponent")
+	if not splitter_component:
+		splitter_component = EnemySplitterComponent.new()
+		splitter_component.name = "EnemySplitterComponent"
+		add_child(splitter_component)
+
+	# Create or get movement component
+	movement_component = get_node_or_null("EnemyMovementComponent")
+	if not movement_component:
+		movement_component = EnemyMovementComponent.new()
+		movement_component.name = "EnemyMovementComponent"
+		add_child(movement_component)
+
 	# Connect component signals
 	_connect_component_signals()
 
@@ -138,17 +145,15 @@ func _connect_component_signals() -> void:
 		combat_component.damaged.connect(_on_combat_damaged)
 		combat_component.hp_changed.connect(_on_combat_hp_changed)
 
+	# Splitter component setup
+	if splitter_component:
+		splitter_component.setup(self)
+
 
 ## Cache path data for O(1) progress calculations.
+## Delegated to EnemyMovementComponent.
 func _cache_path_data() -> void:
-	_cached_path_length = 0.0
-	_cached_waypoint_distances.clear()
-	_cached_waypoint_distances.append(0.0)
-
-	for i in range(1, path_waypoints.size()):
-		var segment_length = path_waypoints[i - 1].distance_to(path_waypoints[i])
-		_cached_path_length += segment_length
-		_cached_waypoint_distances.append(_cached_path_length)
+	pass  # Handled by movement_component
 
 
 ## Initialize stats from enemy_data.
@@ -197,44 +202,9 @@ func _calculate_wave_scale(wave_number: int) -> float:
 
 
 ## Follow the path to the end.
-func _follow_path(delta: float) -> void:
-	if path_waypoints.size() == 0 or path_index >= path_waypoints.size():
-		_escape()
-		return
-
-	var target = path_waypoints[path_index]
-
-	# Check if feared (moving backward)
-	var is_feared = effects_component and effects_component.is_feared()
-	if is_feared and path_index > 0:
-		target = path_waypoints[path_index - 1]
-
-	var direction = (target - global_position).normalized()
-	var speed_modifier = _get_current_speed_modifier()
-	var move_distance = base_move_speed * speed_modifier * delta
-
-	# Check if we've reached the waypoint (using squared distance for performance)
-	var distance_sq_to_target = global_position.distance_squared_to(target)
-	var move_distance_sq = move_distance * move_distance
-
-	if distance_sq_to_target <= move_distance_sq:
-		global_position = target
-
-		if is_feared:
-			path_index = maxi(0, path_index - 1)
-		else:
-			path_index += 1
-
-		# Check if we've reached the end
-		if path_index >= path_waypoints.size():
-			_escape()
-			return
-	else:
-		global_position += direction * move_distance
-
-		# Rotate sprite to face movement direction
-		if sprite:
-			sprite.flip_h = direction.x < 0
+## Delegated to EnemyMovementComponent.
+func _follow_path(_delta: float) -> void:
+	pass  # Handled by movement_component in _process()
 
 
 ## Get the current speed modifier from all sources.
@@ -272,25 +242,10 @@ func apply_effect(effect: TraitEffect) -> void:
 
 
 ## Apply knockback effect.
+## Delegated to EnemyMovementComponent.
 func apply_knockback(distance_tiles: float) -> void:
-	if path_index <= 0:
-		return
-
-	var pixels_to_move = distance_tiles * 64  # TILE_SIZE
-	var remaining = pixels_to_move
-
-	while remaining > 0 and path_index > 0:
-		var prev_waypoint = path_waypoints[path_index - 1]
-		var dist_to_prev = global_position.distance_to(prev_waypoint)
-
-		if dist_to_prev <= remaining:
-			global_position = prev_waypoint
-			remaining -= dist_to_prev
-			path_index -= 1
-		else:
-			var direction = (prev_waypoint - global_position).normalized()
-			global_position += direction * remaining
-			remaining = 0
+	if movement_component:
+		movement_component.apply_knockback(distance_tiles)
 
 
 ## Instant kill (for instakill effects).
@@ -308,32 +263,11 @@ func _escape() -> void:
 
 ## Handle enemy death (called internally).
 func _handle_death(killer: Node) -> void:
-	# Handle splitter
-	if enemy_data and enemy_data.does_split():
-		_spawn_split_enemies()
+	# Handle splitter via component
+	if splitter_component:
+		splitter_component.spawn_split_enemies()
 
 	queue_free()
-
-
-## Spawn split enemies when a splitter dies.
-func _spawn_split_enemies() -> void:
-	if not enemy_data or not enemy_data.does_split():
-		return
-
-	var split_count = enemy_data.get_split_count()
-	var data_to_use = split_enemy_data if split_enemy_data else enemy_data
-
-	for i in range(split_count):
-		var split_enemy = duplicate()
-		split_enemy.enemy_data = data_to_use
-		split_enemy.path_index = path_index
-		split_enemy.wave_scale = wave_scale * 0.5
-		split_enemy.modifier_type = EnemyModifier.ModifierType.NONE
-
-		var offset = Vector2(randf_range(-20, 20), randf_range(-20, 20))
-		split_enemy.global_position = global_position + offset
-
-		get_parent().add_child(split_enemy)
 
 
 ## Check if this enemy is flying (for targeting purposes).
@@ -344,36 +278,20 @@ func is_flying() -> bool:
 
 
 ## Get remaining distance to end of path (O(1) using cached data).
+## Delegated to EnemyMovementComponent.
 func get_remaining_distance() -> float:
-	if path_waypoints.size() == 0 or _cached_path_length <= 0.0:
-		return 0.0
-
-	var distance_to_current: float = 0.0
-	if path_index < path_waypoints.size():
-		distance_to_current = global_position.distance_to(path_waypoints[path_index])
-
-	var distance_from_waypoint_to_end: float = 0.0
-	if path_index < _cached_waypoint_distances.size():
-		distance_from_waypoint_to_end = _cached_path_length - _cached_waypoint_distances[path_index]
-
-	return distance_to_current + distance_from_waypoint_to_end
+	if movement_component:
+		return movement_component.get_remaining_distance()
+	return 0.0
 
 
 ## Get path progress as a value from 0.0 to 1.0 (1.0 = at end).
 ## O(1) complexity using cached path data.
+## Delegated to EnemyMovementComponent.
 func get_path_progress() -> float:
-	if _cached_path_length <= 0.0:
-		return 0.0
-
-	var distance_traveled: float = 0.0
-	if path_index > 0 and path_index < _cached_waypoint_distances.size():
-		distance_traveled = _cached_waypoint_distances[path_index - 1]
-		var prev_waypoint = path_waypoints[path_index - 1]
-		distance_traveled += prev_waypoint.distance_to(global_position)
-	elif path_index > 0:
-		distance_traveled = _cached_path_length
-
-	return clampf(distance_traveled / _cached_path_length, 0.0, 1.0)
+	if movement_component:
+		return movement_component.get_path_progress()
+	return 0.0
 
 
 ## Get the attribute of this enemy (for damage calculations).
@@ -393,6 +311,12 @@ func is_dead() -> bool:
 	if combat_component:
 		return combat_component.is_dead()
 	return false
+
+
+## Set the split enemy data (for external configuration).
+func set_split_data(data: EnemyData) -> void:
+	if splitter_component:
+		splitter_component.set_split_data(data)
 
 
 # -----------------------------------------------------------------------------

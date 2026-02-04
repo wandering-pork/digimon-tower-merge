@@ -1,0 +1,28 @@
+{
+	"dirs": [
+		"res://tests/unit/",
+		"res://tests/integration/"
+	],
+	"double_strategy": "SCRIPT_ONLY",
+	"ignore_pause": true,
+	"include_subdirs": true,
+	"inner_class": "",
+	"log_level": 1,
+	"opacity": 100,
+	"prefix": "test_",
+	"selected": "",
+	"should_exit": true,
+	"should_exit_on_success": false,
+	"should_maximize": false,
+	"suffix": ".gd",
+	"tests": [],
+	"font_color": "cccccc",
+	"background_color": "1d1d21",
+	"font_size": 20,
+	"font_name": "",
+	"panel_options": {
+		"font_color": "cccccc",
+		"background_color": "1d1d21",
+		"font_size": 20
+	}
+}

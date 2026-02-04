@@ -3,9 +3,7 @@ extends Node
 ## Handles all combat-related logic for DigimonTower.
 ## Includes targeting, attacking, damage calculation, and status effects.
 ##
-## TODO: [DOCUMENTATION] Document calculate_damage() method with formula explanation
-## Should include: base damage, level scaling, DP scaling, attribute multipliers
-## See: docs/IMPLEMENTATION_TODO.md
+## For detailed damage formula documentation, see the calculate_damage() method below.
 
 # =============================================================================
 # PRELOADED DEPENDENCIES
@@ -234,7 +232,75 @@ func _perform_attack() -> void:
 		attack_timer.start()
 
 
-## Calculate damage including level scaling and attribute bonus
+## Calculate damage including level scaling and attribute bonus.
+##
+## =============================================================================
+## DAMAGE FORMULA
+## =============================================================================
+##
+## Final Damage = Base Damage × Level Multiplier × DP Multiplier × Attribute Multiplier
+##
+## Where:
+##   - Base Damage: The DigimonData.base_damage stat (e.g., 10, 25, 50)
+##   - Level Multiplier: 1.0 + (current_level - 1) × 0.02
+##   - DP Multiplier: 1.0 + current_dp × 0.05
+##   - Attribute Multiplier: 0.75 (weak), 1.0 (neutral), or 1.5 (super effective)
+##
+## =============================================================================
+## SCALING FACTORS (from GameConfig)
+## =============================================================================
+##
+## Level Scaling (LEVEL_SCALE_PER_LEVEL = 0.02):
+##   - Each level above 1 adds 2% damage
+##   - Level 1: 1.0× (no bonus)
+##   - Level 10: 1.18× (+18%)
+##   - Level 20: 1.38× (+38%)
+##   - Level 50: 1.98× (+98%)
+##   - Level 100: 2.98× (+198%)
+##
+## DP Scaling (DP_SCALE_PER_DP = 0.05):
+##   - Each DP adds 5% damage
+##   - DP 0: 1.0× (no bonus)
+##   - DP 5: 1.25× (+25%)
+##   - DP 10: 1.50× (+50%)
+##   - DP 20: 2.00× (+100%)
+##
+## Attribute Triangle:
+##   - VACCINE → VIRUS: 1.5× (super effective)
+##   - DATA → VACCINE: 1.5× (super effective)
+##   - VIRUS → DATA: 1.5× (super effective)
+##   - Reverse matchups: 0.75× (not very effective)
+##   - Same attribute or FREE: 1.0× (neutral)
+##
+## =============================================================================
+## EXAMPLE CALCULATIONS
+## =============================================================================
+##
+## Example 1: Early Game Rookie
+##   - Base Damage: 15
+##   - Level: 10, DP: 0, Neutral matchup
+##   - Level Mult: 1.0 + (10-1) × 0.02 = 1.18
+##   - DP Mult: 1.0 + 0 × 0.05 = 1.0
+##   - Attr Mult: 1.0
+##   - Final: 15 × 1.18 × 1.0 × 1.0 = 17.7 damage
+##
+## Example 2: Mid Game Champion with DP
+##   - Base Damage: 35
+##   - Level: 25, DP: 5, Super effective (Vaccine vs Virus)
+##   - Level Mult: 1.0 + (25-1) × 0.02 = 1.48
+##   - DP Mult: 1.0 + 5 × 0.05 = 1.25
+##   - Attr Mult: 1.5
+##   - Final: 35 × 1.48 × 1.25 × 1.5 = 97.1 damage
+##
+## Example 3: Late Game Mega with High DP
+##   - Base Damage: 80
+##   - Level: 60, DP: 15, Weak matchup (Vaccine vs Data)
+##   - Level Mult: 1.0 + (60-1) × 0.02 = 2.18
+##   - DP Mult: 1.0 + 15 × 0.05 = 1.75
+##   - Attr Mult: 0.75
+##   - Final: 80 × 2.18 × 1.75 × 0.75 = 228.9 damage
+##
+## =============================================================================
 func calculate_damage() -> float:
 	if not tower.digimon_data:
 		return 0.0
@@ -242,12 +308,15 @@ func calculate_damage() -> float:
 	var base = float(tower.digimon_data.base_damage)
 
 	# Level scaling using GameConfig constants
+	# Formula: 1.0 + (level - 1) × 0.02 → +2% per level above 1
 	var level_multiplier = 1.0 + (tower.current_level - 1) * GameConfig.LEVEL_SCALE_PER_LEVEL
 
 	# DP bonus using GameConfig constants
+	# Formula: 1.0 + dp × 0.05 → +5% per Digivolution Point
 	var dp_multiplier = 1.0 + tower.current_dp * GameConfig.DP_SCALE_PER_DP
 
 	# Attribute multiplier (if target has attribute)
+	# Returns 1.5 for super effective, 0.75 for not effective, 1.0 for neutral
 	var attr_multiplier = 1.0
 	if is_instance_valid(_target) and _target.has_method("get_attribute"):
 		var target_attr = _target.get_attribute()

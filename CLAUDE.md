@@ -85,13 +85,15 @@ project/
 - `tower_ui_component.gd` - Label updates, DP indicator, stats display formatting
 
 ### Enemy Components (scripts/enemies/)
-- `enemy_digimon.gd` - Core enemy, path movement
+- `enemy_digimon.gd` - Core enemy coordinator, component management
 - `enemy_state_machine.gd` - States: IDLE, MOVING, STUNNED, SLOWED, FEARED, DYING, DEAD
 - `enemy_effects_component.gd` - Status effects (burn, freeze, slow, poison, fear, etc.)
 - `enemy_combat_component.gd` - Damage handling, HP, death
+- `enemy_movement_component.gd` - Path following, knockback, O(1) progress queries
+- `enemy_splitter_component.gd` - Split enemy spawning on death
 
 ### Wave System (scripts/systems/)
-- `wave_manager.gd` - State orchestration, wave flow, signal handling (~280 lines)
+- `wave_manager.gd` - State orchestration, wave flow, signal handling (~165 lines)
 - `wave_spawner.gd` - Enemy instantiation, spawn timing, spawn queue management (~190 lines)
 - `wave_state_machine.gd` - States: IDLE, COUNTDOWN, SPAWNING, IN_PROGRESS, INTERMISSION, BOSS_INCOMING, VICTORY, DEFEAT
 - `wave_generator.gd` - Main wave generation interface

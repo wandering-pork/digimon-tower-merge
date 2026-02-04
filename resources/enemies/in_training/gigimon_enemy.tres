@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+digimon_name = "Gigimon"
+enemy_type = 1
+attribute = 2
+base_hp = 18
+base_armor = 0.05
+base_speed = 1.0
+reward = 2
+sprite_path = "res://assets/sprites/enemies/in_training/gigimon.png"
+regen_percent = 0.0
+split_count = 0
+is_boss = false

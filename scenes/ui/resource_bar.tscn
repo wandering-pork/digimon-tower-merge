@@ -1,0 +1,84 @@
+[gd_scene load_steps=2 format=3 uid="uid://bresource_bar"]
+
+[ext_resource type="Script" path="res://scripts/ui/resource_bar.gd" id="1_resource_bar"]
+
+[node name="ResourceBar" type="PanelContainer"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 50.0
+grow_horizontal = 2
+script = ExtResource("1_resource_bar")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="DigiByteSection" type="HBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="DigiByteIcon" type="TextureRect" parent="HBoxContainer/DigiByteSection"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+size_flags_vertical = 4
+stretch_mode = 5
+
+[node name="DigiByteAmount" type="Label" parent="HBoxContainer/DigiByteSection"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_colors/font_color = Color(1, 0.85, 0, 1)
+theme_override_font_sizes/font_size = 18
+text = "200 DB"
+
+[node name="VSeparator1" type="VSeparator" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="LivesSection" type="HBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="LivesIcon" type="TextureRect" parent="HBoxContainer/LivesSection"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+size_flags_vertical = 4
+stretch_mode = 5
+
+[node name="LivesLabel" type="Label" parent="HBoxContainer/LivesSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
+theme_override_font_sizes/font_size = 16
+text = "Lives:"
+
+[node name="LivesAmount" type="Label" parent="HBoxContainer/LivesSection"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "20"
+
+[node name="VSeparator2" type="VSeparator" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="WaveSection" type="HBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="WaveLabel" type="Label" parent="HBoxContainer/WaveSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "Wave: 0"
+
+[node name="Spacer" type="Control" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SpeedBtn" type="Button" parent="HBoxContainer"]
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "1.0x"
+
+[node name="PauseBtn" type="Button" parent="HBoxContainer"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "||"

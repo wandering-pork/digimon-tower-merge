@@ -1,0 +1,172 @@
+[gd_scene load_steps=2 format=3 uid="uid://c3wj7mxk6y1fd"]
+
+[ext_resource type="Script" path="res://scripts/ui/merge_confirmation.gd" id="1"]
+
+[node name="MergeConfirmation" type="PanelContainer"]
+custom_minimum_size = Vector2(500, 280)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -140.0
+offset_right = 250.0
+offset_bottom = 140.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1")
+
+[node name="MainVBox" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="MainVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "MERGE DIGIMON?"
+horizontal_alignment = 1
+
+[node name="Separator1" type="HSeparator" parent="MainVBox"]
+layout_mode = 2
+
+[node name="Preview" type="HBoxContainer" parent="MainVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="SourcePreview" type="VBoxContainer" parent="MainVBox/Preview"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+alignment = 1
+
+[node name="SourceSprite" type="ColorRect" parent="MainVBox/Preview/SourcePreview"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+color = Color(0.8, 0.2, 0.2, 1)
+
+[node name="SourceName" type="Label" parent="MainVBox/Preview/SourcePreview"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Agumon"
+horizontal_alignment = 1
+
+[node name="SourceDP" type="Label" parent="MainVBox/Preview/SourcePreview"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "DP: 0"
+horizontal_alignment = 1
+
+[node name="SourceOrigin" type="Label" parent="MainVBox/Preview/SourcePreview"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.7, 0.7, 0.7, 1)
+text = "Origin: Rookie"
+horizontal_alignment = 1
+
+[node name="Arrow1" type="Label" parent="MainVBox/Preview"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 24
+text = "+"
+vertical_alignment = 1
+
+[node name="TargetPreview" type="VBoxContainer" parent="MainVBox/Preview"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+alignment = 1
+
+[node name="TargetSprite" type="ColorRect" parent="MainVBox/Preview/TargetPreview"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+color = Color(0.2, 0.6, 1, 1)
+
+[node name="TargetName" type="Label" parent="MainVBox/Preview/TargetPreview"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Agumon"
+horizontal_alignment = 1
+
+[node name="TargetDP" type="Label" parent="MainVBox/Preview/TargetPreview"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "DP: 1"
+horizontal_alignment = 1
+
+[node name="TargetOrigin" type="Label" parent="MainVBox/Preview/TargetPreview"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.7, 0.7, 0.7, 1)
+text = "Origin: In-Training"
+horizontal_alignment = 1
+
+[node name="Arrow2" type="Label" parent="MainVBox/Preview"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 24
+text = "="
+vertical_alignment = 1
+
+[node name="ResultPreview" type="VBoxContainer" parent="MainVBox/Preview"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+alignment = 1
+
+[node name="ResultSprite" type="ColorRect" parent="MainVBox/Preview/ResultPreview"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+color = Color(0.2, 1, 0.4, 1)
+
+[node name="ResultName" type="Label" parent="MainVBox/Preview/ResultPreview"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Agumon"
+horizontal_alignment = 1
+
+[node name="ResultDP" type="Label" parent="MainVBox/Preview/ResultPreview"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.2, 1, 0.4, 1)
+text = "DP: 2 (+1)"
+horizontal_alignment = 1
+
+[node name="ResultOrigin" type="Label" parent="MainVBox/Preview/ResultPreview"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.2, 1, 0.4, 1)
+text = "Origin: In-Training"
+horizontal_alignment = 1
+
+[node name="Separator2" type="HSeparator" parent="MainVBox"]
+layout_mode = 2
+
+[node name="Warning" type="Label" parent="MainVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.6, 0.2, 1)
+theme_override_font_sizes/font_size = 13
+text = "Source Digimon will be consumed!"
+horizontal_alignment = 1
+
+[node name="Buttons" type="HBoxContainer" parent="MainVBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="ConfirmBtn" type="Button" parent="MainVBox/Buttons"]
+custom_minimum_size = Vector2(120, 45)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "MERGE"
+
+[node name="Spacer" type="Control" parent="MainVBox/Buttons"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+
+[node name="CancelBtn" type="Button" parent="MainVBox/Buttons"]
+custom_minimum_size = Vector2(120, 45)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Cancel"

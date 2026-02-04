@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(dir:*)",
+      "WebFetch(domain:gamefaqs.gamespot.com)",
+      "WebFetch(domain:strategywiki.org)",
+      "WebFetch(domain:dev.metalkid.info)",
+      "WebFetch(domain:withthewill.net)",
+      "WebFetch(domain:www.spriters-resource.com)",
+      "Bash(curl:*)",
+      "Bash(echo:*)",
+      "Bash(done)",
+      "Bash(\"C:\\\\Program Files \\(x86\\)\\\\Steam\\\\steamapps\\\\common\\\\Godot Engine\\\\godot.windows.opt.tools.64.exe\" --version)",
+      "Bash(godot:*)",
+      "Bash(powershell -Command \"$env:PATH -split '';'' | Where-Object { $_-like ''*godot*'' -or $_-like ''*Godot*'' }\")",
+      "Bash(powershell -Command \"Get-Command godot -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source\")",
+      "Bash(powershell -Command:*)",
+      "Bash(claude mcp add godot -s user -- node \"E:/code/godot mcp/godot-mcp/build/index.js\")"
+    ]
+  }
+}

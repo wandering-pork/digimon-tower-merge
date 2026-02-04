@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="DigimonData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/digimon_data.gd" id="1"]
+[ext_resource type="Resource" path="res://resources/evolutions/veemon_to_exveemon.tres" id="2"]
+[ext_resource type="Resource" path="res://resources/evolutions/veemon_to_flamedramon.tres" id="3"]
+[ext_resource type="Resource" path="res://resources/evolutions/veemon_to_magnamon.tres" id="4"]
+
+[resource]
+script = ExtResource("1")
+digimon_name = "Veemon"
+stage = 1
+attribute = 3
+family = 0
+base_damage = 8
+attack_speed = 1.0
+attack_range = 1.5
+effect_type = "Stun"
+effect_chance = 0.1
+effect_duration = 0.5
+special_ability_name = ""
+special_ability_description = ""
+special_cooldown = 0.0
+evolutions = [ExtResource("2"), ExtResource("3"), ExtResource("4")]
+evolves_from = "DemiVeemon"
+dna_partner = ""
+dna_result = ""

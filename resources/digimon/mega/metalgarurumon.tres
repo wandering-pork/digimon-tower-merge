@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="DigimonData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/digimon_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+digimon_name = "MetalGarurumon"
+stage = 4
+attribute = 1
+family = 1
+base_damage = 60
+attack_speed = 0.6
+attack_range = 4.0
+effect_type = "Freeze"
+effect_chance = 0.5
+effect_duration = 2.5
+special_ability_name = "Cocytus Breath"
+special_ability_description = "Freezes all enemies in range with absolute zero breath"
+special_cooldown = 12.0
+evolutions = []
+evolves_from = "WereGarurumon"
+dna_partner = "WarGreymon"
+dna_result = "Omnimon"

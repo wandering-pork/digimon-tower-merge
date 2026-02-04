@@ -1,0 +1,87 @@
+[gd_scene load_steps=4 format=3 uid="uid://cwave_info_panel"]
+
+[ext_resource type="Script" path="res://scripts/ui/wave_info_panel.gd" id="1_wave_info"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.1, 0.1, 0.15, 0.9)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_progress_bg"]
+bg_color = Color(0.2, 0.2, 0.25, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="WaveInfoPanel" type="PanelContainer"]
+offset_right = 200.0
+offset_bottom = 140.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+script = ExtResource("1_wave_info")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="WaveNumber" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.4, 1)
+theme_override_font_sizes/font_size = 24
+text = "Wave 1"
+horizontal_alignment = 1
+
+[node name="EnemyCount" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_font_sizes/font_size = 16
+text = "Enemies: 0/6"
+horizontal_alignment = 1
+
+[node name="Separator" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="IntermissionContainer" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="IntermissionLabel" type="Label" parent="VBoxContainer/IntermissionContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "Next wave in: 20s"
+horizontal_alignment = 1
+
+[node name="IntermissionBar" type="ProgressBar" parent="VBoxContainer/IntermissionContainer"]
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_progress_bg")
+max_value = 20.0
+value = 20.0
+show_percentage = false
+
+[node name="SkipButton" type="Button" parent="VBoxContainer/IntermissionContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Start Now"
+
+[node name="NextWavePreview" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.6, 0.7, 1)
+theme_override_font_sizes/font_size = 12
+text = "Next: Rookie Swarm"
+horizontal_alignment = 1
+
+[node name="BossWarning" type="Label" parent="VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.3, 0.3, 1)
+theme_override_font_sizes/font_size = 14
+text = "BOSS INCOMING!"
+horizontal_alignment = 1

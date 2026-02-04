@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+digimon_name = "Myotismon"
+enemy_type = 1
+attribute = 2
+base_hp = 6000
+base_armor = 0.2
+base_speed = 0.9
+reward = 400
+sprite_path = "res://assets/sprites/enemies/ultimate/myotismon.png"
+regen_percent = 0.01
+split_count = 0
+is_boss = true

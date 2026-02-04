@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="DigimonData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/digimon_data.gd" id="1"]
+[ext_resource type="Resource" path="res://resources/evolutions/greymon_to_metalgreymon.tres" id="2"]
+[ext_resource type="Resource" path="res://resources/evolutions/greymon_to_rizegreymon.tres" id="3"]
+
+[resource]
+script = ExtResource("1")
+digimon_name = "Greymon"
+stage = 2
+attribute = 0
+family = 0
+base_damage = 18
+attack_speed = 0.8
+attack_range = 3.0
+effect_type = "Burn"
+effect_chance = 0.25
+effect_duration = 3.0
+special_ability_name = ""
+special_ability_description = ""
+special_cooldown = 0.0
+evolutions = [ExtResource("2"), ExtResource("3")]
+evolves_from = "Agumon"
+dna_partner = ""
+dna_result = ""

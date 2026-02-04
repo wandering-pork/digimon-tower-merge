@@ -1,0 +1,154 @@
+[gd_scene load_steps=2 format=3 uid="uid://cpxbqm7vqj2aq"]
+
+[ext_resource type="Script" path="res://scripts/ui/main_menu.gd" id="1_main_menu"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_main_menu")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.1, 0.1, 0.15, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -150.0
+offset_right = 150.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="TitleLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0, 1)
+theme_override_font_sizes/font_size = 36
+text = "DIGIMON TOWER MERGE"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+
+[node name="NewGameButton" type="Button" parent="VBoxContainer"]
+custom_minimum_size = Vector2(200, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "New Game"
+
+[node name="ContinueButton" type="Button" parent="VBoxContainer"]
+custom_minimum_size = Vector2(200, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Continue"
+
+[node name="SettingsButton" type="Button" parent="VBoxContainer"]
+custom_minimum_size = Vector2(200, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Settings"
+
+[node name="QuitButton" type="Button" parent="VBoxContainer"]
+custom_minimum_size = Vector2(200, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Quit"
+
+[node name="SettingsPanel" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -150.0
+offset_right = 200.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SettingsPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
+
+[node name="TitleLabel" type="Label" parent="SettingsPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Settings"
+horizontal_alignment = 1
+
+[node name="MasterVolume" type="HBoxContainer" parent="SettingsPanel/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SettingsPanel/VBoxContainer/MasterVolume"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Master Volume"
+
+[node name="HSlider" type="HSlider" parent="SettingsPanel/VBoxContainer/MasterVolume"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+value = 80.0
+
+[node name="MusicVolume" type="HBoxContainer" parent="SettingsPanel/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SettingsPanel/VBoxContainer/MusicVolume"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Music Volume"
+
+[node name="HSlider" type="HSlider" parent="SettingsPanel/VBoxContainer/MusicVolume"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+value = 70.0
+
+[node name="SFXVolume" type="HBoxContainer" parent="SettingsPanel/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SettingsPanel/VBoxContainer/SFXVolume"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "SFX Volume"
+
+[node name="HSlider" type="HSlider" parent="SettingsPanel/VBoxContainer/SFXVolume"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+value = 80.0
+
+[node name="Spacer" type="Control" parent="SettingsPanel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CloseButton" type="Button" parent="SettingsPanel/VBoxContainer"]
+layout_mode = 2
+text = "Close"
+
+[connection signal="pressed" from="SettingsPanel/VBoxContainer/CloseButton" to="." method="_on_settings_close_pressed"]

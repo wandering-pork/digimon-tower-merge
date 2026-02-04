@@ -1,0 +1,162 @@
+[gd_scene load_steps=5 format=3 uid="uid://dhqp8x3y5m6la"]
+
+[ext_resource type="Script" path="res://scripts/ui/spawn_menu.gd" id="1_spawn_menu"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_stage"]
+resource_name = "StageGroup"
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_type"]
+resource_name = "TypeGroup"
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_attr"]
+resource_name = "AttributeGroup"
+
+[node name="SpawnMenu" type="PanelContainer"]
+visible = false
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = -280.0
+offset_right = 200.0
+grow_horizontal = 2
+grow_vertical = 0
+script = ExtResource("1_spawn_menu")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "SPAWN DIGIMON"
+horizontal_alignment = 1
+
+[node name="StageSelectorLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Stage:"
+
+[node name="StageSelector" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="InTrainingBtn" type="Button" parent="MarginContainer/VBoxContainer/StageSelector"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_stage")
+text = "In-Training
+100 DB"
+
+[node name="RookieBtn" type="Button" parent="MarginContainer/VBoxContainer/StageSelector"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_group = SubResource("ButtonGroup_stage")
+text = "Rookie
+300 DB"
+
+[node name="ChampionBtn" type="Button" parent="MarginContainer/VBoxContainer/StageSelector"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_group = SubResource("ButtonGroup_stage")
+text = "Champion
+800 DB"
+
+[node name="TypeSelectorLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Type:"
+
+[node name="TypeSelector" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="RandomBtn" type="Button" parent="MarginContainer/VBoxContainer/TypeSelector"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_type")
+text = "Random
+x1.0"
+
+[node name="SpecificBtn" type="Button" parent="MarginContainer/VBoxContainer/TypeSelector"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_group = SubResource("ButtonGroup_type")
+text = "Specific
+x1.5"
+
+[node name="FreeBtn" type="Button" parent="MarginContainer/VBoxContainer/TypeSelector"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_group = SubResource("ButtonGroup_type")
+text = "FREE
+x2.0"
+
+[node name="AttributeSelectorLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+text = "Attribute:"
+
+[node name="AttributeSelector" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="VaccineBtn" type="Button" parent="MarginContainer/VBoxContainer/AttributeSelector"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_attr")
+text = "Vaccine"
+
+[node name="DataBtn" type="Button" parent="MarginContainer/VBoxContainer/AttributeSelector"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_group = SubResource("ButtonGroup_attr")
+text = "Data"
+
+[node name="VirusBtn" type="Button" parent="MarginContainer/VBoxContainer/AttributeSelector"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_group = SubResource("ButtonGroup_attr")
+text = "Virus"
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="TotalCost" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Total: 100 DB"
+horizontal_alignment = 1
+
+[node name="Actions" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="SpawnBtn" type="Button" parent="MarginContainer/VBoxContainer/Actions"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "SPAWN"
+
+[node name="CancelBtn" type="Button" parent="MarginContainer/VBoxContainer/Actions"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Cancel"

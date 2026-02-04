@@ -1,0 +1,135 @@
+[gd_scene load_steps=2 format=3 uid="uid://btower_info_panel"]
+
+[ext_resource type="Script" path="res://scripts/ui/tower_info_panel.gd" id="1_tower_info"]
+
+[node name="TowerInfoPanel" type="PanelContainer"]
+visible = false
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -260.0
+offset_top = 70.0
+offset_right = -10.0
+offset_bottom = 450.0
+grow_horizontal = 0
+script = ExtResource("1_tower_info")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Header" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TowerSprite" type="TextureRect" parent="MarginContainer/VBoxContainer/Header"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+size_flags_vertical = 4
+expand_mode = 1
+stretch_mode = 5
+
+[node name="HeaderInfo" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 2
+
+[node name="TowerName" type="Label" parent="MarginContainer/VBoxContainer/Header/HeaderInfo"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Greymon"
+
+[node name="StageAttribute" type="Label" parent="MarginContainer/VBoxContainer/Header/HeaderInfo"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.7, 0.7, 1)
+theme_override_font_sizes/font_size = 12
+text = "Champion | Vaccine"
+
+[node name="HSeparator1" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="LevelInfo" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Level 25/35 | DP: 3"
+
+[node name="OriginInfo" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.7, 0.5, 1)
+theme_override_font_sizes/font_size = 12
+text = "Origin: In-Training"
+
+[node name="HSeparator2" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="StatsLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "Combat Stats"
+
+[node name="DamageInfo" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "DMG: 18 | SPD: 0.8/s | RNG: 3.0"
+
+[node name="EffectInfo" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.6, 0.4, 1)
+theme_override_font_sizes/font_size = 12
+text = "Burn 25% (3s)"
+
+[node name="HSeparator3" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="TargetLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Target: First"
+
+[node name="CycleTargetBtn" type="Button" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+text = "Change Target"
+
+[node name="HSeparator4" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Actions" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="LevelUpBtn" type="Button" parent="MarginContainer/VBoxContainer/Actions"]
+custom_minimum_size = Vector2(0, 35)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Level Up (125 DB)"
+
+[node name="DigivolveBtn" type="Button" parent="MarginContainer/VBoxContainer/Actions"]
+custom_minimum_size = Vector2(0, 35)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.4, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "Digivolve (150 DB)"
+
+[node name="SellBtn" type="Button" parent="MarginContainer/VBoxContainer/Actions"]
+custom_minimum_size = Vector2(0, 35)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.6, 0.4, 1)
+theme_override_font_sizes/font_size = 14
+text = "Sell (975 DB)"
+
+[node name="OriginCapWarning" type="Label" parent="MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.5, 0.3, 1)
+theme_override_font_sizes/font_size = 11
+text = "(At Origin Cap - Cannot evolve further)"
+horizontal_alignment = 1

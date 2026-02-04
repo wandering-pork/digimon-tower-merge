@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="DigimonData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/digimon_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+digimon_name = "WarGreymon"
+stage = 4
+attribute = 0
+family = 0
+base_damage = 70
+attack_speed = 0.5
+attack_range = 4.0
+effect_type = "Burn"
+effect_chance = 0.6
+effect_duration = 4.0
+special_ability_name = "Terra Force"
+special_ability_description = "Gathers energy and hurls a massive sphere of destruction"
+special_cooldown = 15.0
+evolutions = []
+evolves_from = "MetalGreymon"
+dna_partner = "MetalGarurumon"
+dna_result = "Omnimon"

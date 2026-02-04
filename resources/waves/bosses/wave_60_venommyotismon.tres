@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+digimon_name = "VenomMyotismon"
+enemy_type = 2
+attribute = 2
+base_hp = 20000
+base_armor = 0.3
+base_speed = 0.7
+reward = 600
+sprite_path = "res://assets/sprites/enemies/mega/venommyotismon.png"
+regen_percent = 0.01
+split_count = 0
+is_boss = true

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+digimon_name = "Greymon"
+enemy_type = 1
+attribute = 0
+base_hp = 500
+base_armor = 0.15
+base_speed = 0.9
+reward = 100
+sprite_path = "res://assets/sprites/enemies/champion/greymon.png"
+regen_percent = 0.0
+split_count = 0
+is_boss = true

@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="DigimonData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/digimon_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+digimon_name = "Gallantmon"
+stage = 4
+attribute = 2
+family = 0
+base_damage = 68
+attack_speed = 0.6
+attack_range = 3.5
+effect_type = "Stun"
+effect_chance = 0.3
+effect_duration = 1.5
+special_ability_name = "Lightning Joust"
+special_ability_description = "Piercing attack that strikes all enemies in a line"
+special_cooldown = 10.0
+evolutions = []
+evolves_from = "WarGrowlmon"
+dna_partner = ""
+dna_result = ""

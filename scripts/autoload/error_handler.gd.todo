@@ -1,0 +1,36 @@
+# TODO: Create ErrorHandler Autoload
+#
+# This file is a placeholder for the ErrorHandler singleton.
+# Rename to error_handler.gd and implement when ready.
+#
+# Features needed:
+# - Severity levels (INFO, WARNING, ERROR, CRITICAL)
+# - Consistent logging format: "[SEVERITY] [Context] Message"
+# - Signal for error UI: error_logged(severity, context, message)
+# - Debug vs release behavior (verbose in debug, quiet in release)
+#
+# Example implementation:
+#
+# class_name ErrorHandler
+# extends Node
+#
+# enum Severity { INFO, WARNING, ERROR, CRITICAL }
+#
+# signal error_logged(severity: Severity, context: String, message: String)
+#
+# func log(severity: Severity, context: String, message: String) -> void:
+#     var prefix = "[%s] [%s]" % [Severity.keys()[severity], context]
+#     match severity:
+#         Severity.INFO:
+#             print("%s %s" % [prefix, message])
+#         Severity.WARNING:
+#             push_warning("%s %s" % [prefix, message])
+#         Severity.ERROR:
+#             push_error("%s %s" % [prefix, message])
+#         Severity.CRITICAL:
+#             push_error("%s %s" % [prefix, message])
+#             assert(false, message)
+#
+#     error_logged.emit(severity, context, message)
+#
+# See: docs/IMPLEMENTATION_TODO.md

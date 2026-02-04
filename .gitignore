@@ -1,0 +1,62 @@
+# Godot 4+ specific ignores
+.godot/
+
+# Godot-specific ignores
+*.translation
+
+# Imported textures and other resources
+*.import
+
+# Export templates and builds
+export/
+exports/
+build/
+builds/
+
+# OS generated
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Godot editor settings (optional - uncomment if you don't want to share)
+# export_presets.cfg
+
+# Mono/.NET (if using C#)
+.mono/
+data_*/
+
+# Android export
+*.apk
+*.aab
+android/
+.gradle/
+
+# iOS export
+*.ipa
+
+# HTML5 export
+*.html
+*.wasm
+
+# Backup files
+*.backup
+*~

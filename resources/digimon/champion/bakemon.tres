@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="DigimonData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/digimon_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+digimon_name = "Bakemon"
+stage = 2
+attribute = 2
+family = 3
+base_damage = 14
+attack_speed = 1.0
+attack_range = 2.0
+effect_type = "Fear"
+effect_chance = 0.25
+effect_duration = 3.0
+special_ability_name = ""
+special_ability_description = ""
+special_cooldown = 0.0
+evolutions = []
+evolves_from = ""
+dna_partner = ""
+dna_result = ""

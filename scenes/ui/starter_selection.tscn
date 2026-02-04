@@ -1,0 +1,329 @@
+[gd_scene load_steps=2 format=3 uid="uid://bck3xnl6qw7pa"]
+
+[ext_resource type="Script" path="res://scripts/ui/starter_selection.gd" id="1_starter_selection"]
+
+[node name="StarterSelection" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_starter_selection")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.1, 0.12, 0.15, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_top = 40.0
+offset_right = -40.0
+offset_bottom = -40.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="Title" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "CHOOSE YOUR PARTNER"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Select an In-Training Digimon to begin your journey"
+horizontal_alignment = 1
+
+[node name="StarterGrid" type="GridContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+columns = 4
+
+[node name="Starter1" type="PanelContainer" parent="VBoxContainer/StarterGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBox" type="VBoxContainer" parent="VBoxContainer/StarterGrid/Starter1"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Sprite" type="TextureRect" parent="VBoxContainer/StarterGrid/Starter1/VBox"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+size_flags_horizontal = 4
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Name" type="Label" parent="VBoxContainer/StarterGrid/Starter1/VBox"]
+layout_mode = 2
+text = "Koromon"
+horizontal_alignment = 1
+
+[node name="Info" type="Label" parent="VBoxContainer/StarterGrid/Starter1/VBox"]
+layout_mode = 2
+text = "Vaccine | Dragon's Roar"
+horizontal_alignment = 1
+
+[node name="Evolution" type="Label" parent="VBoxContainer/StarterGrid/Starter1/VBox"]
+layout_mode = 2
+text = "-> Agumon -> Greymon"
+horizontal_alignment = 1
+
+[node name="SelectBtn" type="Button" parent="VBoxContainer/StarterGrid/Starter1/VBox"]
+layout_mode = 2
+text = "Select"
+
+[node name="Starter2" type="PanelContainer" parent="VBoxContainer/StarterGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBox" type="VBoxContainer" parent="VBoxContainer/StarterGrid/Starter2"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Sprite" type="TextureRect" parent="VBoxContainer/StarterGrid/Starter2/VBox"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+size_flags_horizontal = 4
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Name" type="Label" parent="VBoxContainer/StarterGrid/Starter2/VBox"]
+layout_mode = 2
+text = "Tsunomon"
+horizontal_alignment = 1
+
+[node name="Info" type="Label" parent="VBoxContainer/StarterGrid/Starter2/VBox"]
+layout_mode = 2
+text = "Data | Nature Spirits"
+horizontal_alignment = 1
+
+[node name="Evolution" type="Label" parent="VBoxContainer/StarterGrid/Starter2/VBox"]
+layout_mode = 2
+text = "-> Gabumon -> Garurumon"
+horizontal_alignment = 1
+
+[node name="SelectBtn" type="Button" parent="VBoxContainer/StarterGrid/Starter2/VBox"]
+layout_mode = 2
+text = "Select"
+
+[node name="Starter3" type="PanelContainer" parent="VBoxContainer/StarterGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBox" type="VBoxContainer" parent="VBoxContainer/StarterGrid/Starter3"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Sprite" type="TextureRect" parent="VBoxContainer/StarterGrid/Starter3/VBox"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+size_flags_horizontal = 4
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Name" type="Label" parent="VBoxContainer/StarterGrid/Starter3/VBox"]
+layout_mode = 2
+text = "Tokomon"
+horizontal_alignment = 1
+
+[node name="Info" type="Label" parent="VBoxContainer/StarterGrid/Starter3/VBox"]
+layout_mode = 2
+text = "Vaccine | Virus Busters"
+horizontal_alignment = 1
+
+[node name="Evolution" type="Label" parent="VBoxContainer/StarterGrid/Starter3/VBox"]
+layout_mode = 2
+text = "-> Patamon -> Angemon"
+horizontal_alignment = 1
+
+[node name="SelectBtn" type="Button" parent="VBoxContainer/StarterGrid/Starter3/VBox"]
+layout_mode = 2
+text = "Select"
+
+[node name="Starter4" type="PanelContainer" parent="VBoxContainer/StarterGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBox" type="VBoxContainer" parent="VBoxContainer/StarterGrid/Starter4"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Sprite" type="TextureRect" parent="VBoxContainer/StarterGrid/Starter4/VBox"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+size_flags_horizontal = 4
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Name" type="Label" parent="VBoxContainer/StarterGrid/Starter4/VBox"]
+layout_mode = 2
+text = "Gigimon"
+horizontal_alignment = 1
+
+[node name="Info" type="Label" parent="VBoxContainer/StarterGrid/Starter4/VBox"]
+layout_mode = 2
+text = "Virus | Dragon's Roar"
+horizontal_alignment = 1
+
+[node name="Evolution" type="Label" parent="VBoxContainer/StarterGrid/Starter4/VBox"]
+layout_mode = 2
+text = "-> Guilmon -> Growlmon"
+horizontal_alignment = 1
+
+[node name="SelectBtn" type="Button" parent="VBoxContainer/StarterGrid/Starter4/VBox"]
+layout_mode = 2
+text = "Select"
+
+[node name="Starter5" type="PanelContainer" parent="VBoxContainer/StarterGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBox" type="VBoxContainer" parent="VBoxContainer/StarterGrid/Starter5"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Sprite" type="TextureRect" parent="VBoxContainer/StarterGrid/Starter5/VBox"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+size_flags_horizontal = 4
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Name" type="Label" parent="VBoxContainer/StarterGrid/Starter5/VBox"]
+layout_mode = 2
+text = "Tanemon"
+horizontal_alignment = 1
+
+[node name="Info" type="Label" parent="VBoxContainer/StarterGrid/Starter5/VBox"]
+layout_mode = 2
+text = "Data | Jungle Troopers"
+horizontal_alignment = 1
+
+[node name="Evolution" type="Label" parent="VBoxContainer/StarterGrid/Starter5/VBox"]
+layout_mode = 2
+text = "-> Palmon -> Togemon"
+horizontal_alignment = 1
+
+[node name="SelectBtn" type="Button" parent="VBoxContainer/StarterGrid/Starter5/VBox"]
+layout_mode = 2
+text = "Select"
+
+[node name="Starter6" type="PanelContainer" parent="VBoxContainer/StarterGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBox" type="VBoxContainer" parent="VBoxContainer/StarterGrid/Starter6"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Sprite" type="TextureRect" parent="VBoxContainer/StarterGrid/Starter6/VBox"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+size_flags_horizontal = 4
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Name" type="Label" parent="VBoxContainer/StarterGrid/Starter6/VBox"]
+layout_mode = 2
+text = "DemiVeemon"
+horizontal_alignment = 1
+
+[node name="Info" type="Label" parent="VBoxContainer/StarterGrid/Starter6/VBox"]
+layout_mode = 2
+text = "Free | Dragon's Roar"
+horizontal_alignment = 1
+
+[node name="Evolution" type="Label" parent="VBoxContainer/StarterGrid/Starter6/VBox"]
+layout_mode = 2
+text = "-> Veemon -> ExVeemon"
+horizontal_alignment = 1
+
+[node name="SelectBtn" type="Button" parent="VBoxContainer/StarterGrid/Starter6/VBox"]
+layout_mode = 2
+text = "Select"
+
+[node name="Starter7" type="PanelContainer" parent="VBoxContainer/StarterGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBox" type="VBoxContainer" parent="VBoxContainer/StarterGrid/Starter7"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Sprite" type="TextureRect" parent="VBoxContainer/StarterGrid/Starter7/VBox"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+size_flags_horizontal = 4
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Name" type="Label" parent="VBoxContainer/StarterGrid/Starter7/VBox"]
+layout_mode = 2
+text = "Pagumon"
+horizontal_alignment = 1
+
+[node name="Info" type="Label" parent="VBoxContainer/StarterGrid/Starter7/VBox"]
+layout_mode = 2
+text = "Virus | Nightmare Soldiers"
+horizontal_alignment = 1
+
+[node name="Evolution" type="Label" parent="VBoxContainer/StarterGrid/Starter7/VBox"]
+layout_mode = 2
+text = "-> DemiDevimon -> Devimon"
+horizontal_alignment = 1
+
+[node name="SelectBtn" type="Button" parent="VBoxContainer/StarterGrid/Starter7/VBox"]
+layout_mode = 2
+text = "Select"
+
+[node name="Starter8" type="PanelContainer" parent="VBoxContainer/StarterGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBox" type="VBoxContainer" parent="VBoxContainer/StarterGrid/Starter8"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Sprite" type="TextureRect" parent="VBoxContainer/StarterGrid/Starter8/VBox"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+size_flags_horizontal = 4
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Name" type="Label" parent="VBoxContainer/StarterGrid/Starter8/VBox"]
+layout_mode = 2
+text = "Viximon"
+horizontal_alignment = 1
+
+[node name="Info" type="Label" parent="VBoxContainer/StarterGrid/Starter8/VBox"]
+layout_mode = 2
+text = "Data | Nature Spirits"
+horizontal_alignment = 1
+
+[node name="Evolution" type="Label" parent="VBoxContainer/StarterGrid/Starter8/VBox"]
+layout_mode = 2
+text = "-> Renamon -> Kyubimon"
+horizontal_alignment = 1
+
+[node name="SelectBtn" type="Button" parent="VBoxContainer/StarterGrid/Starter8/VBox"]
+layout_mode = 2
+text = "Select"

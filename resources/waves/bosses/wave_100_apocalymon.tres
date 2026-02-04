@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+digimon_name = "Apocalymon"
+enemy_type = 2
+attribute = 2
+base_hp = 200000
+base_armor = 0.3
+base_speed = 0.5
+reward = 2000
+sprite_path = "res://assets/sprites/enemies/ultra/apocalymon.png"
+regen_percent = 0.0
+split_count = 0
+is_boss = true

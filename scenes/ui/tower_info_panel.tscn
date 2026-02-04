@@ -119,6 +119,13 @@ theme_override_colors/font_color = Color(0.8, 0.4, 1, 1)
 theme_override_font_sizes/font_size = 14
 text = "Digivolve (150 DB)"
 
+[node name="MergeBtn" type="Button" parent="MarginContainer/VBoxContainer/Actions"]
+custom_minimum_size = Vector2(0, 35)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8, 0.2, 1)
+theme_override_font_sizes/font_size = 14
+text = "Merge (+1 DP)"
+
 [node name="SellBtn" type="Button" parent="MarginContainer/VBoxContainer/Actions"]
 custom_minimum_size = Vector2(0, 35)
 layout_mode = 2

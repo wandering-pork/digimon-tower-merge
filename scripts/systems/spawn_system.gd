@@ -189,6 +189,9 @@ func spawn_tower(grid_pos: Vector2i, digimon_data: DigimonData, origin: int) -> 
 	# Place on grid
 	_grid_manager.place_tower(grid_pos, tower)
 
+	# Play spawn sound
+	AudioManager.play_sfx("tower_spawn")
+
 	# Emit signals
 	tower_spawned.emit(tower, grid_pos)
 

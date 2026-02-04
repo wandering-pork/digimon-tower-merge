@@ -2,8 +2,10 @@ class_name SpawnMenu
 extends PanelContainer
 ## UI Panel for spawning new Digimon towers.
 ## Allows player to select stage, type (random/specific/FREE), and attribute.
+## Supports both direct spawn (at clicked position) and drag-drop placement mode.
 
 signal spawn_requested(grid_pos: Vector2i, stage: int, attribute: int, cost: int)
+signal placement_mode_requested(stage: int, attribute: int, cost: int, spawn_type: int)
 signal menu_closed
 
 ## Spawn type enum
@@ -50,7 +52,11 @@ const TYPE_MULTIPLIERS = {
 
 # Action buttons
 @onready var spawn_btn: Button = $MarginContainer/VBoxContainer/Actions/SpawnBtn
+@onready var place_btn: Button = $MarginContainer/VBoxContainer/Actions/PlaceBtn
 @onready var cancel_btn: Button = $MarginContainer/VBoxContainer/Actions/CancelBtn
+
+## Placement mode - when true, opens as placement selector without target position
+var _placement_mode: bool = false
 
 ## Current selections
 var _selected_stage: int = 0  # In-Training by default
@@ -77,6 +83,8 @@ func _ready() -> void:
 
 	# Connect action buttons
 	spawn_btn.pressed.connect(_on_spawn_pressed)
+	if place_btn:
+		place_btn.pressed.connect(_on_place_pressed)
 	cancel_btn.pressed.connect(_on_cancel_pressed)
 
 	# Initial state
@@ -84,10 +92,11 @@ func _ready() -> void:
 	_update_attribute_visibility()
 	hide()
 
-## Open the spawn menu for a specific grid position
+## Open the spawn menu for a specific grid position (direct spawn mode)
 func open_at_position(grid_pos: Vector2i) -> void:
 	_target_grid_pos = grid_pos
 	_is_open = true
+	_placement_mode = false
 
 	# Reset to defaults
 	_selected_stage = 0
@@ -102,6 +111,36 @@ func open_at_position(grid_pos: Vector2i) -> void:
 	_update_cost_display()
 	_update_attribute_visibility()
 	_update_affordability()
+	_update_button_visibility()
+
+	show()
+
+	# Emit UI signal
+	if EventBus:
+		var spawns = _get_available_spawns()
+		EventBus.ui_spawn_menu_opened.emit(spawns)
+
+
+## Open the spawn menu for drag-drop placement (no target position)
+func open_for_placement() -> void:
+	_target_grid_pos = Vector2i(-1, -1)
+	_is_open = true
+	_placement_mode = true
+
+	# Reset to defaults
+	_selected_stage = 0
+	_selected_type = SpawnType.RANDOM
+	_selected_attribute = DigimonData.Attribute.VACCINE
+
+	# Update button states
+	in_training_btn.button_pressed = true
+	random_btn.button_pressed = true
+	vaccine_btn.button_pressed = true
+
+	_update_cost_display()
+	_update_attribute_visibility()
+	_update_affordability()
+	_update_button_visibility()
 
 	show()
 
@@ -128,17 +167,20 @@ func get_target_position() -> Vector2i:
 	return _target_grid_pos
 
 func _on_stage_selected(stage: int) -> void:
+	AudioManager.play_sfx("button_click")
 	_selected_stage = stage
 	_update_cost_display()
 	_update_affordability()
 
 func _on_type_selected(spawn_type: SpawnType) -> void:
+	AudioManager.play_sfx("button_click")
 	_selected_type = spawn_type
 	_update_attribute_visibility()
 	_update_cost_display()
 	_update_affordability()
 
 func _on_attribute_selected(attribute: int) -> void:
+	AudioManager.play_sfx("button_click")
 	_selected_attribute = attribute
 
 func _on_spawn_pressed() -> void:
@@ -146,9 +188,12 @@ func _on_spawn_pressed() -> void:
 
 	# Check if player can afford
 	if not GameManager.can_afford(cost):
-		# Show cannot afford feedback
+		# Show cannot afford feedback and play insufficient funds sound
+		AudioManager.play_sfx("insufficient_funds")
 		_flash_cost_label()
 		return
+
+	AudioManager.play_sfx("button_click")
 
 	# Determine final attribute
 	var final_attribute: int
@@ -166,8 +211,46 @@ func _on_spawn_pressed() -> void:
 
 	close()
 
-func _on_cancel_pressed() -> void:
+func _on_place_pressed() -> void:
+	## Handle "Drag to Place" button - enters placement mode
+	var cost = _calculate_cost()
+
+	# Check if player can afford
+	if not GameManager.can_afford(cost):
+		AudioManager.play_sfx("insufficient_funds")
+		_flash_cost_label()
+		return
+
+	AudioManager.play_sfx("button_click")
+
+	# Determine final attribute for placement mode
+	var final_attribute: int
+	match _selected_type:
+		SpawnType.RANDOM:
+			final_attribute = -1  # Random will be determined at spawn time
+		SpawnType.SPECIFIC:
+			final_attribute = _selected_attribute
+		SpawnType.FREE:
+			final_attribute = DigimonData.Attribute.FREE
+
+	# Emit placement mode signal
+	placement_mode_requested.emit(_selected_stage, final_attribute, cost, _selected_type)
+
 	close()
+
+
+func _on_cancel_pressed() -> void:
+	AudioManager.play_sfx("button_click")
+	close()
+
+
+func _update_button_visibility() -> void:
+	## Show/hide spawn vs place buttons based on mode
+	if spawn_btn:
+		spawn_btn.visible = not _placement_mode
+	if place_btn:
+		place_btn.visible = _placement_mode
+
 
 ## Calculate total spawn cost based on selections
 func _calculate_cost() -> int:
@@ -195,7 +278,10 @@ func _update_affordability() -> void:
 	var cost = _calculate_cost()
 	var can_afford = GameManager.can_afford(cost)
 
-	spawn_btn.disabled = not can_afford
+	if spawn_btn:
+		spawn_btn.disabled = not can_afford
+	if place_btn:
+		place_btn.disabled = not can_afford
 
 	if can_afford:
 		total_cost_label.add_theme_color_override("font_color", Color.WHITE)
@@ -235,3 +321,46 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		close()
 		get_viewport().set_input_as_handled()
+
+
+## Cleanup when removed from scene tree
+func _exit_tree() -> void:
+	# Disconnect stage buttons
+	if in_training_btn and in_training_btn.pressed.is_connected(_on_stage_selected):
+		in_training_btn.pressed.disconnect(_on_stage_selected)
+
+	if rookie_btn and rookie_btn.pressed.is_connected(_on_stage_selected):
+		rookie_btn.pressed.disconnect(_on_stage_selected)
+
+	if champion_btn and champion_btn.pressed.is_connected(_on_stage_selected):
+		champion_btn.pressed.disconnect(_on_stage_selected)
+
+	# Disconnect type buttons
+	if random_btn and random_btn.pressed.is_connected(_on_type_selected):
+		random_btn.pressed.disconnect(_on_type_selected)
+
+	if specific_btn and specific_btn.pressed.is_connected(_on_type_selected):
+		specific_btn.pressed.disconnect(_on_type_selected)
+
+	if free_btn and free_btn.pressed.is_connected(_on_type_selected):
+		free_btn.pressed.disconnect(_on_type_selected)
+
+	# Disconnect attribute buttons
+	if vaccine_btn and vaccine_btn.pressed.is_connected(_on_attribute_selected):
+		vaccine_btn.pressed.disconnect(_on_attribute_selected)
+
+	if data_btn and data_btn.pressed.is_connected(_on_attribute_selected):
+		data_btn.pressed.disconnect(_on_attribute_selected)
+
+	if virus_btn and virus_btn.pressed.is_connected(_on_attribute_selected):
+		virus_btn.pressed.disconnect(_on_attribute_selected)
+
+	# Disconnect action buttons
+	if spawn_btn and spawn_btn.pressed.is_connected(_on_spawn_pressed):
+		spawn_btn.pressed.disconnect(_on_spawn_pressed)
+
+	if place_btn and place_btn.pressed.is_connected(_on_place_pressed):
+		place_btn.pressed.disconnect(_on_place_pressed)
+
+	if cancel_btn and cancel_btn.pressed.is_connected(_on_cancel_pressed):
+		cancel_btn.pressed.disconnect(_on_cancel_pressed)

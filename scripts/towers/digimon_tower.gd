@@ -232,6 +232,24 @@ func flash_on_attack() -> void:
 		visual.flash_on_attack()
 
 
+## Set merge source visual state
+func set_merge_source(is_source: bool) -> void:
+	if visual:
+		visual.set_merge_source(is_source)
+
+
+## Set merge target visual state
+func set_merge_target(is_target: bool) -> void:
+	if visual:
+		visual.set_merge_target(is_target)
+
+
+## Clear all merge visual states
+func clear_merge_state() -> void:
+	if visual:
+		visual.clear_merge_state()
+
+
 # =============================================================================
 # DELEGATION METHODS - UI Component
 # =============================================================================

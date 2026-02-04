@@ -5,6 +5,13 @@ extends GutTest
 ## Note: Some tests require GameManager mock since EconomySystem depends on it.
 
 # =============================================================================
+# PRELOADS
+# =============================================================================
+
+# Preload GameConfig for accessing stage constants
+const GameConfigScript = preload("res://scripts/autoload/game_config.gd")
+
+# =============================================================================
 # MOCK CLASSES
 # =============================================================================
 
@@ -74,7 +81,7 @@ func test_get_spawn_cost_delegates_to_game_config() -> void:
 		return
 
 	# These should match GameConfig values
-	var cost = _economy_system.get_spawn_cost(GameConfig.STAGE_ROOKIE, "random")
+	var cost = _economy_system.get_spawn_cost(GameConfigScript.STAGE_ROOKIE, "random")
 	assert_eq(cost, 300, "Spawn cost should delegate to GameConfig")
 
 

@@ -6,11 +6,13 @@ This directory contains unit and integration tests for the Digimon Tower Merge g
 
 ```
 tests/
-├── unit/              # Unit tests for individual components
-│   ├── test_game_config.gd      # Tests for GameConfig calculations
-│   └── test_economy_system.gd   # Tests for EconomySystem transactions
-├── integration/       # Integration tests (coming soon)
-└── README.md          # This file
+├── unit/                           # Unit tests for individual components
+│   ├── test_game_config.gd         # Tests for GameConfig calculations
+│   ├── test_economy_system.gd      # Tests for EconomySystem transactions
+│   ├── test_wave_state_machine.gd  # Tests for WaveStateMachine transitions
+│   └── test_enemy_state_machine.gd # Tests for EnemyStateMachine transitions
+├── integration/                    # Integration tests (coming soon)
+└── README.md                       # This file
 ```
 
 ## Installing GUT
@@ -134,6 +136,8 @@ Test component interactions:
 |-----------|-------|----------|
 | GameConfig | 45+ | Spawn costs, level costs, digivolve costs, max level calculations, grid conversions |
 | EconomySystem | 30+ | Spawn costs, level costs, sell values, wave rewards, cost formatting |
+| WaveStateMachine | 60+ | Initial state, valid/invalid transitions, state queries, signals, reset |
+| EnemyStateMachine | 70+ | Initial state, CC states, death states, alive/movement queries, signals |
 
 ## Adding New Tests
 

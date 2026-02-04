@@ -193,6 +193,9 @@ func handle_escape(enemy_data: Resource) -> void:
 	if state_machine:
 		state_machine.transition_to(EnemyStateMachine.State.DEAD)
 
+	# Play escape sound
+	AudioManager.play_sfx("enemy_escape")
+
 	# Emit signal
 	escaped.emit(is_boss)
 
@@ -262,6 +265,9 @@ func _die(killer: Node) -> void:
 		var enemy_data = enemy.get_enemy_data()
 		if enemy_data:
 			reward = enemy_data.reward
+
+	# Play death sound
+	AudioManager.play_sfx("enemy_death", 0.15)
 
 	# Emit signal
 	died.emit(killer, reward)

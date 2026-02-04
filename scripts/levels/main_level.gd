@@ -15,12 +15,14 @@ extends Node2D
 @onready var _tower_info_panel: PanelContainer = $UI/TowerInfoPanel
 @onready var _evolution_menu: Control = $UI/EvolutionMenu
 @onready var _sell_confirmation: PanelContainer = $UI/SellConfirmation
+@onready var _merge_confirmation: Control = $UI/MergeConfirmation
 
 # System references
 var _grid_manager: GridManager
 var _spawn_system: SpawnSystem
 var _evolution_system: EvolutionSystem
 var _merge_system: MergeSystem
+var _placement_system: TowerPlacementSystem
 
 # Component references
 var _ui_coordinator: LevelUICoordinator
@@ -42,6 +44,11 @@ func _ready() -> void:
 	_initialize_components()
 	_connect_signals()
 	_draw_grid_visuals()
+
+	# Register with SaveSystem for save/load functionality
+	if SaveSystem:
+		SaveSystem.set_current_level(self)
+
 	if not _has_starter:
 		_ui_coordinator.show_starter_selection()
 
@@ -63,9 +70,14 @@ func _initialize_systems() -> void:
 	_merge_system.name = "MergeSystem"
 	add_child(_merge_system)
 
+	_placement_system = TowerPlacementSystem.new()
+	_placement_system.name = "TowerPlacementSystem"
+	_grid.add_child(_placement_system)
+
 	_spawn_system.set_grid_manager(_grid_manager)
 	_spawn_system.set_tower_container(_towers)
 	_merge_system.set_grid_manager(_grid_manager)
+	_placement_system.initialize(_grid_manager, _spawn_system)
 
 	if WaveManager:
 		WaveManager.setup(_enemies, _grid_manager)
@@ -78,7 +90,8 @@ func _initialize_components() -> void:
 	_ui_coordinator.initialize(
 		_ui_layer, _hud, _spawn_menu, _evolution_menu,
 		_tower_info_panel, _sell_confirmation,
-		_evolution_system, _grid_manager
+		_evolution_system, _grid_manager,
+		_merge_system, _merge_confirmation
 	)
 
 	_input_handler = LevelInputHandler.new()
@@ -100,7 +113,24 @@ func _connect_signals() -> void:
 
 	if _spawn_menu:
 		_spawn_menu.spawn_requested.connect(_on_spawn_requested)
+		_spawn_menu.placement_mode_requested.connect(_on_placement_mode_requested)
 		_spawn_menu.menu_closed.connect(func(): _ui_coordinator.on_spawn_menu_closed())
+
+	# Connect placement system signals
+	if _placement_system:
+		_placement_system.placement_completed.connect(_on_placement_completed)
+		_placement_system.placement_cancelled.connect(_on_placement_cancelled)
+		_placement_system.position_invalid.connect(_on_placement_invalid)
+
+	# Connect HUD signals
+	if _hud and _hud.has_signal("spawn_tower_requested"):
+		_hud.spawn_tower_requested.connect(_on_hud_spawn_tower_requested)
+
+
+func _on_hud_spawn_tower_requested() -> void:
+	## Handle spawn tower button from HUD - open spawn menu in placement mode
+	if _spawn_menu:
+		_spawn_menu.open_for_placement()
 
 
 func _draw_grid_visuals() -> void:
@@ -141,6 +171,11 @@ func _spawn_starter_at_best_slot(data: DigimonData, min_pos: Vector2i, max_pos: 
 
 func _on_spawn_requested(grid_pos: Vector2i, stage: int, attribute: int, cost: int) -> void:
 	_spawn_system.handle_spawn_request(grid_pos, stage, attribute, cost)
+
+
+func _on_placement_mode_requested(stage: int, attribute: int, cost: int, spawn_type: int) -> void:
+	## Handle request to enter drag-drop placement mode from spawn menu
+	start_tower_placement(stage, attribute, cost, spawn_type)
 
 
 ## Spawn a tower at a grid position (legacy method)
@@ -216,6 +251,47 @@ func get_merge_system() -> MergeSystem:
 	return _merge_system
 
 
+func get_placement_system() -> TowerPlacementSystem:
+	return _placement_system
+
+
+## Start tower placement mode (called from spawn menu or UI)
+func start_tower_placement(stage: int, attribute: int, cost: int, spawn_type: int = 0) -> void:
+	if _placement_system:
+		_placement_system.start_placement(stage, attribute, cost, spawn_type)
+		EventBus.placement_mode_started.emit(stage, attribute, cost)
+
+
+## Cancel tower placement mode
+func cancel_tower_placement() -> void:
+	if _placement_system and _placement_system.is_placing():
+		_placement_system.cancel_placement()
+
+
+## Check if placement mode is active
+func is_placement_active() -> bool:
+	return _placement_system and _placement_system.is_placing()
+
+
+func _on_placement_completed(grid_pos: Vector2i, stage: int, attribute: int, cost: int) -> void:
+	## Handle successful tower placement from drag-drop system
+	var success = _spawn_system.handle_spawn_request(grid_pos, stage, attribute, cost)
+	if success:
+		EventBus.tower_placed_via_dragdrop.emit(grid_pos, stage, attribute, cost)
+	EventBus.placement_mode_ended.emit()
+
+
+func _on_placement_cancelled() -> void:
+	## Handle placement cancellation
+	EventBus.placement_mode_ended.emit()
+
+
+func _on_placement_invalid(grid_pos: Vector2i, reason: String) -> void:
+	## Handle invalid placement attempt - show feedback
+	var world_pos = grid_to_world(grid_pos)
+	EventBus.floating_text_requested.emit(world_pos, reason, Color.RED)
+
+
 func _on_enemy_killed(_enemy: Node, _killer: Node, _reward: int) -> void:
 	_enemies_remaining -= 1
 	_check_wave_complete()
@@ -251,3 +327,23 @@ func _on_game_over() -> void:
 		instance.digimon_evolved = 0
 		get_tree().root.add_child(instance)
 		queue_free()
+
+
+func _exit_tree() -> void:
+	# Clear SaveSystem reference when level is freed
+	if SaveSystem:
+		SaveSystem.set_current_level(null)
+
+	# Disconnect EventBus signals
+	if EventBus:
+		if EventBus.enemy_killed.is_connected(_on_enemy_killed):
+			EventBus.enemy_killed.disconnect(_on_enemy_killed)
+		if EventBus.enemy_escaped.is_connected(_on_enemy_escaped):
+			EventBus.enemy_escaped.disconnect(_on_enemy_escaped)
+		if EventBus.wave_started.is_connected(_on_wave_started):
+			EventBus.wave_started.disconnect(_on_wave_started)
+		if EventBus.wave_completed.is_connected(_on_wave_completed):
+			EventBus.wave_completed.disconnect(_on_wave_completed)
+
+	if GameManager and GameManager.game_over.is_connected(_on_game_over):
+		GameManager.game_over.disconnect(_on_game_over)

@@ -26,6 +26,7 @@ AudioManager="*res://scripts/autoload/audio_manager.gd"
 CombatSystem="*res://scripts/systems/combat_system.gd"
 WaveManager="*res://scripts/systems/wave_manager.gd"
 EconomySystem="*res://scripts/systems/economy_system.gd"
+SaveSystem="*res://scripts/autoload/save_system.gd"
 
 [display]
 

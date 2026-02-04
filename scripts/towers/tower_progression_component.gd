@@ -110,6 +110,9 @@ func do_level_up() -> void:
 		current_level += 1
 		level_up.emit(current_level)
 
+		# Play level up sound
+		AudioManager.play_sfx("tower_level_up")
+
 		if EventBus:
 			EventBus.show_level_up_text(tower.global_position, current_level)
 

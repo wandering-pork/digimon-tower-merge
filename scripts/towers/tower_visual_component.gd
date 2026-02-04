@@ -20,6 +20,13 @@ var flash_timer: Timer
 ## Flash state
 var _original_modulate: Color = Color.WHITE
 var _is_selected: bool = false
+var _is_merge_source: bool = false
+var _is_merge_target: bool = false
+
+## Visual constants
+const SELECTED_MODULATE: Color = Color(1.2, 1.2, 1.2)
+const MERGE_SOURCE_MODULATE: Color = Color(1.0, 0.8, 0.2)  # Golden glow for merge source
+const MERGE_TARGET_MODULATE: Color = Color(0.2, 1.0, 0.4)  # Green glow for valid target
 
 
 func _init() -> void:
@@ -135,8 +142,7 @@ func flash_on_attack() -> void:
 ## Update selection state (affects flash restoration and sprite modulation)
 func set_selected(selected: bool) -> void:
 	_is_selected = selected
-	if sprite:
-		sprite.modulate = Color(1.2, 1.2, 1.2) if selected else Color.WHITE
+	_update_modulate()
 
 
 ## Get whether currently selected
@@ -144,9 +150,45 @@ func is_selected() -> bool:
 	return _is_selected
 
 
+## Set merge source state (tower initiating merge)
+func set_merge_source(is_source: bool) -> void:
+	_is_merge_source = is_source
+	_update_modulate()
+
+
+## Set merge target state (valid merge target)
+func set_merge_target(is_target: bool) -> void:
+	_is_merge_target = is_target
+	_update_modulate()
+
+
+## Clear all merge visual states
+func clear_merge_state() -> void:
+	_is_merge_source = false
+	_is_merge_target = false
+	_update_modulate()
+
+
+## Get the appropriate modulate color based on current state
+func _get_current_modulate() -> Color:
+	if _is_merge_source:
+		return MERGE_SOURCE_MODULATE
+	if _is_merge_target:
+		return MERGE_TARGET_MODULATE
+	if _is_selected:
+		return SELECTED_MODULATE
+	return Color.WHITE
+
+
+## Update sprite modulate based on all states
+func _update_modulate() -> void:
+	if sprite:
+		sprite.modulate = _get_current_modulate()
+
+
 func _on_flash_timer_timeout() -> void:
 	if sprite:
-		sprite.modulate = _original_modulate if not _is_selected else Color(1.2, 1.2, 1.2)
+		sprite.modulate = _original_modulate if not (_is_selected or _is_merge_source or _is_merge_target) else _get_current_modulate()
 
 
 func _exit_tree() -> void:

@@ -202,6 +202,9 @@ func _process_countdown(_delta: float) -> void:
 	enemies_alive = total_enemies_this_wave
 	enemies_killed_this_wave = 0
 
+	# Play wave start sound
+	AudioManager.play_sfx("wave_start")
+
 	wave_started.emit(current_wave, total_enemies_this_wave)
 	EventBus.wave_started.emit(current_wave, total_enemies_this_wave)
 
@@ -235,10 +238,15 @@ func _complete_wave() -> void:
 	var reward = WaveRewardCalculator.calculate_wave_reward(current_wave, enemies_killed_this_wave)
 	GameManager.add_digibytes(reward)
 
+	# Play wave complete sound
+	AudioManager.play_sfx("wave_complete")
+
 	wave_completed.emit(current_wave, reward)
 	EventBus.wave_completed.emit(current_wave, reward)
 
 	if current_wave >= GameConfig.MAIN_GAME_WAVES and not is_endless_mode:
+		# Play victory sound
+		AudioManager.play_sfx("victory")
 		_state_machine.transition_to(WaveStateMachine.State.VICTORY)
 		all_waves_completed.emit()
 		return
@@ -254,6 +262,8 @@ func _on_spawner_enemy_spawned(enemy: Node, is_boss: bool) -> void:
 	_spawner.connect_enemy_signals(enemy, _on_enemy_died, _on_enemy_escaped_direct)
 
 	if is_boss:
+		# Play boss spawn sound
+		AudioManager.play_sfx("boss_spawn")
 		boss_spawned.emit(enemy)
 		EventBus.boss_spawned.emit(enemy, current_wave, "Boss")
 	else:

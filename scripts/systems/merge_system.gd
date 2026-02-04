@@ -120,12 +120,9 @@ func preview_merge(source: DigimonTower, target: DigimonTower) -> Dictionary:
 	result["level_cap_before"] = target.get_max_level()
 
 	# Temporarily calculate what the new cap would be
-	# Level cap = base + (DP * stage_bonus) + (origin_bonus)
+	# Use GameConfig.calculate_max_level for consistency
 	var stage = target.digimon_data.stage
-	var base = DigimonTower.BASE_MAX_LEVELS[stage]
-	var dp_bonus = result["new_dp"] * DigimonTower.DP_BONUS_PER_STAGE[stage]
-	var origin_bonus = (stage - result["new_origin"]) * DigimonTower.ORIGIN_BONUS_PER_EVOLUTION
-	result["level_cap_after"] = base + dp_bonus + origin_bonus
+	result["level_cap_after"] = GameConfig.calculate_max_level(stage, result["new_dp"], result["new_origin"])
 
 	return result
 
@@ -159,6 +156,9 @@ func execute_merge(source: DigimonTower, target: DigimonTower) -> void:
 	_clear_highlights()
 	_drag_source = null
 	_valid_targets.clear()
+
+	# Play merge success sound
+	AudioManager.play_sfx("merge_success")
 
 	# Emit signals
 	merge_completed.emit(target, source)
@@ -223,12 +223,14 @@ func _clear_highlights() -> void:
 
 ## Get origin stage name
 func _get_origin_name(origin: int) -> String:
+	if GameConfig:
+		return GameConfig.get_stage_name(origin)
 	match origin:
-		DigimonTower.STAGE_IN_TRAINING: return "In-Training"
-		DigimonTower.STAGE_ROOKIE: return "Rookie"
-		DigimonTower.STAGE_CHAMPION: return "Champion"
-		DigimonTower.STAGE_ULTIMATE: return "Ultimate"
-		DigimonTower.STAGE_MEGA: return "Mega"
+		GameConfig.STAGE_IN_TRAINING: return "In-Training"
+		GameConfig.STAGE_ROOKIE: return "Rookie"
+		GameConfig.STAGE_CHAMPION: return "Champion"
+		GameConfig.STAGE_ULTIMATE: return "Ultimate"
+		GameConfig.STAGE_MEGA: return "Mega"
 		_: return "Unknown"
 
 

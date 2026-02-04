@@ -4,11 +4,14 @@ extends Control
 ## Manages the in-game heads-up display showing DigiBytes, lives, wave counter,
 ## and game speed controls. Connects to GameManager signals to stay updated.
 
+signal spawn_tower_requested()
+
 @onready var _digibytes_label: Label = $TopBar/DigiBytes/AmountLabel
 @onready var _lives_label: Label = $TopBar/Lives/AmountLabel
 @onready var _wave_label: Label = $TopBar/Wave/WaveLabel
 @onready var _speed_button: Button = $TopBar/SpeedButton
 @onready var _spawn_panel: Panel = $BottomPanel
+@onready var _spawn_tower_btn: Button = $BottomPanel/SpawnControls/SpawnTowerBtn
 
 
 func _ready() -> void:
@@ -26,6 +29,10 @@ func _connect_signals() -> void:
 	# Connect speed button
 	if _speed_button:
 		_speed_button.pressed.connect(_on_speed_button_pressed)
+
+	# Connect spawn tower button
+	if _spawn_tower_btn:
+		_spawn_tower_btn.pressed.connect(_on_spawn_tower_pressed)
 
 
 func _update_all_displays() -> void:
@@ -78,7 +85,14 @@ func _on_game_speed_changed(new_speed: float) -> void:
 
 
 func _on_speed_button_pressed() -> void:
+	AudioManager.play_sfx("button_click")
 	GameManager.cycle_game_speed()
+
+
+func _on_spawn_tower_pressed() -> void:
+	## Open spawn menu in placement mode
+	AudioManager.play_sfx("button_click")
+	spawn_tower_requested.emit()
 
 
 func _flash_label(label: Label) -> void:
@@ -98,3 +112,27 @@ func set_spawn_panel_visible(visible: bool) -> void:
 ## Get reference to spawn panel for external use
 func get_spawn_panel() -> Panel:
 	return _spawn_panel
+
+
+## Cleanup when removed from scene tree
+func _exit_tree() -> void:
+	# Disconnect GameManager signals
+	if GameManager:
+		if GameManager.digibytes_changed.is_connected(_on_digibytes_changed):
+			GameManager.digibytes_changed.disconnect(_on_digibytes_changed)
+
+		if GameManager.lives_changed.is_connected(_on_lives_changed):
+			GameManager.lives_changed.disconnect(_on_lives_changed)
+
+		if GameManager.wave_changed.is_connected(_on_wave_changed):
+			GameManager.wave_changed.disconnect(_on_wave_changed)
+
+		if GameManager.game_speed_changed.is_connected(_on_game_speed_changed):
+			GameManager.game_speed_changed.disconnect(_on_game_speed_changed)
+
+	# Disconnect button signals
+	if _speed_button and _speed_button.pressed.is_connected(_on_speed_button_pressed):
+		_speed_button.pressed.disconnect(_on_speed_button_pressed)
+
+	if _spawn_tower_btn and _spawn_tower_btn.pressed.is_connected(_on_spawn_tower_pressed):
+		_spawn_tower_btn.pressed.disconnect(_on_spawn_tower_pressed)

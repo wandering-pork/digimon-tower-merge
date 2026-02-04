@@ -156,12 +156,14 @@ func _get_attribute_color(attribute: DigimonData.Attribute) -> Color:
 
 ## Get origin stage name
 func _get_origin_name(origin: int) -> String:
+	if GameConfig:
+		return GameConfig.get_stage_name(origin)
 	match origin:
-		DigimonTower.STAGE_IN_TRAINING: return "In-Training"
-		DigimonTower.STAGE_ROOKIE: return "Rookie"
-		DigimonTower.STAGE_CHAMPION: return "Champion"
-		DigimonTower.STAGE_ULTIMATE: return "Ultimate"
-		DigimonTower.STAGE_MEGA: return "Mega"
+		GameConfig.STAGE_IN_TRAINING: return "In-Training"
+		GameConfig.STAGE_ROOKIE: return "Rookie"
+		GameConfig.STAGE_CHAMPION: return "Champion"
+		GameConfig.STAGE_ULTIMATE: return "Ultimate"
+		GameConfig.STAGE_MEGA: return "Mega"
 		_: return "Unknown"
 
 
@@ -200,3 +202,18 @@ func get_source() -> DigimonTower:
 ## Get the current target tower
 func get_target() -> DigimonTower:
 	return _target
+
+
+## Cleanup when removed from scene tree
+func _exit_tree() -> void:
+	# Disconnect button signals
+	if confirm_btn and confirm_btn.pressed.is_connected(_on_confirm_pressed):
+		confirm_btn.pressed.disconnect(_on_confirm_pressed)
+
+	if cancel_btn and cancel_btn.pressed.is_connected(_on_cancel_pressed):
+		cancel_btn.pressed.disconnect(_on_cancel_pressed)
+
+	# Clear references
+	_source = null
+	_target = null
+	_preview = {}

@@ -121,12 +121,17 @@ func _update_sprite() -> void:
 
 ## Handle confirm button press
 func _on_confirm_pressed() -> void:
+	AudioManager.play_sfx("button_click")
+
 	if not _tower_to_sell:
 		close()
 		return
 
 	var tower = _tower_to_sell
 	var grid_pos = tower.grid_position
+
+	# Play sell sound
+	AudioManager.play_sfx("tower_sell")
 
 	# Sell the tower and get value
 	var value = 0
@@ -160,6 +165,7 @@ func _on_confirm_pressed() -> void:
 
 ## Handle cancel button press
 func _on_cancel_pressed() -> void:
+	AudioManager.play_sfx("button_click")
 	sell_cancelled.emit()
 	close()
 
@@ -198,3 +204,18 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		_on_cancel_pressed()
 		get_viewport().set_input_as_handled()
+
+
+## Cleanup when removed from scene tree
+func _exit_tree() -> void:
+	# Disconnect button signals
+	if confirm_btn and confirm_btn.pressed.is_connected(_on_confirm_pressed):
+		confirm_btn.pressed.disconnect(_on_confirm_pressed)
+
+	if cancel_btn and cancel_btn.pressed.is_connected(_on_cancel_pressed):
+		cancel_btn.pressed.disconnect(_on_cancel_pressed)
+
+	# Clear references
+	_tower_to_sell = null
+	_economy_system = null
+	_grid_manager = null

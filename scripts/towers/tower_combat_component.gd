@@ -214,6 +214,9 @@ func _perform_attack() -> void:
 		# Visual feedback
 		flash_on_attack()
 
+		# Play attack hit sound
+		AudioManager.play_sfx("attack_hit", 0.1)
+
 		# Emit signals
 		attack_started.emit(_target)
 		attack_hit.emit(_target, damage_result["damage"], damage_result["is_critical"])

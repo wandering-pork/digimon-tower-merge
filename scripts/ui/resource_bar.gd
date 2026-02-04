@@ -146,3 +146,27 @@ func force_unpause() -> void:
 		pause_btn.text = "||"
 		pause_btn.modulate = Color.WHITE
 		get_tree().paused = false
+
+
+## Cleanup when removed from scene tree
+func _exit_tree() -> void:
+	# Disconnect GameManager signals
+	if GameManager:
+		if GameManager.digibytes_changed.is_connected(_on_digibytes_changed):
+			GameManager.digibytes_changed.disconnect(_on_digibytes_changed)
+
+		if GameManager.lives_changed.is_connected(_on_lives_changed):
+			GameManager.lives_changed.disconnect(_on_lives_changed)
+
+		if GameManager.wave_changed.is_connected(_on_wave_changed):
+			GameManager.wave_changed.disconnect(_on_wave_changed)
+
+		if GameManager.game_speed_changed.is_connected(_on_speed_changed):
+			GameManager.game_speed_changed.disconnect(_on_speed_changed)
+
+	# Disconnect button signals
+	if speed_btn and speed_btn.pressed.is_connected(_on_speed_btn_pressed):
+		speed_btn.pressed.disconnect(_on_speed_btn_pressed)
+
+	if pause_btn and pause_btn.pressed.is_connected(_on_pause_btn_pressed):
+		pause_btn.pressed.disconnect(_on_pause_btn_pressed)

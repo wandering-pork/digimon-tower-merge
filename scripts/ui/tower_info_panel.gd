@@ -4,6 +4,7 @@ extends PanelContainer
 
 signal level_up_requested(tower: DigimonTower)
 signal digivolve_requested(tower: DigimonTower)
+signal merge_requested(tower: DigimonTower)
 signal sell_requested(tower: DigimonTower)
 signal target_cycle_requested(tower: DigimonTower)
 
@@ -28,8 +29,12 @@ var _evolution_system: EvolutionSystem = null
 @onready var cycle_target_btn: Button = $MarginContainer/VBoxContainer/CycleTargetBtn
 @onready var level_up_btn: Button = $MarginContainer/VBoxContainer/Actions/LevelUpBtn
 @onready var digivolve_btn: Button = $MarginContainer/VBoxContainer/Actions/DigivolveBtn
+@onready var merge_btn: Button = $MarginContainer/VBoxContainer/Actions/MergeBtn
 @onready var sell_btn: Button = $MarginContainer/VBoxContainer/Actions/SellBtn
 @onready var origin_cap_warning: Label = $MarginContainer/VBoxContainer/OriginCapWarning
+
+## Merge system reference
+var _merge_system: MergeSystem = null
 
 
 func _ready() -> void:
@@ -37,6 +42,7 @@ func _ready() -> void:
 	cycle_target_btn.pressed.connect(_on_cycle_target_pressed)
 	level_up_btn.pressed.connect(_on_level_up_pressed)
 	digivolve_btn.pressed.connect(_on_digivolve_pressed)
+	merge_btn.pressed.connect(_on_merge_pressed)
 	sell_btn.pressed.connect(_on_sell_pressed)
 
 	# Connect to EventBus
@@ -59,6 +65,11 @@ func set_economy_system(system: EconomySystem) -> void:
 ## Set evolution system reference
 func set_evolution_system(system: EvolutionSystem) -> void:
 	_evolution_system = system
+
+
+## Set merge system reference
+func set_merge_system(system: MergeSystem) -> void:
+	_merge_system = system
 
 
 ## Handle tower selection from EventBus
@@ -190,7 +201,7 @@ func _update_button_states() -> void:
 	if _current_tower.is_at_origin_cap():
 		digivolve_btn.text = "Origin Cap"
 		digivolve_btn.disabled = true
-	elif data.stage >= DigimonTower.STAGE_MEGA:
+	elif data.stage >= GameConfig.STAGE_MEGA:
 		digivolve_btn.text = "MAX STAGE"
 		digivolve_btn.disabled = true
 	elif _current_tower.current_level < _current_tower.get_digivolve_threshold():
@@ -201,6 +212,26 @@ func _update_button_states() -> void:
 		digivolve_btn.add_theme_color_override("font_color", Color.RED)
 	else:
 		digivolve_btn.remove_theme_color_override("font_color")
+
+	# Merge button
+	var can_merge = data.can_merge()
+	var merge_partners_count = 0
+
+	if can_merge and _merge_system:
+		var stats = _merge_system.get_merge_stats(_current_tower)
+		merge_partners_count = stats.get("potential_partners", 0)
+
+	merge_btn.disabled = not can_merge or merge_partners_count == 0
+
+	if not can_merge:
+		merge_btn.text = "Cannot Merge"
+		merge_btn.tooltip_text = "In-Training stage cannot merge"
+	elif merge_partners_count == 0:
+		merge_btn.text = "No Partners"
+		merge_btn.tooltip_text = "No compatible merge targets available"
+	else:
+		merge_btn.text = "Merge (+1 DP)"
+		merge_btn.tooltip_text = "%d merge partners available" % merge_partners_count
 
 	# Sell button
 	var sell_value = 0
@@ -263,6 +294,19 @@ func _on_digivolve_pressed() -> void:
 	digivolve_requested.emit(_current_tower)
 
 
+## Handle merge button press
+func _on_merge_pressed() -> void:
+	if not _current_tower:
+		return
+
+	if not _current_tower.digimon_data.can_merge():
+		return
+
+	# Emit merge request - the LevelUICoordinator will handle starting merge mode
+	# which will emit merge_mode_entered signal from the MergeSelectionHandler
+	merge_requested.emit(_current_tower)
+
+
 ## Handle sell button press
 func _on_sell_pressed() -> void:
 	if not _current_tower:
@@ -274,12 +318,14 @@ func _on_sell_pressed() -> void:
 
 ## Get origin stage name
 func _get_origin_name(origin: int) -> String:
+	if GameConfig:
+		return GameConfig.get_stage_name(origin)
 	match origin:
-		DigimonTower.STAGE_IN_TRAINING: return "In-Training"
-		DigimonTower.STAGE_ROOKIE: return "Rookie"
-		DigimonTower.STAGE_CHAMPION: return "Champion"
-		DigimonTower.STAGE_ULTIMATE: return "Ultimate"
-		DigimonTower.STAGE_MEGA: return "Mega"
+		GameConfig.STAGE_IN_TRAINING: return "In-Training"
+		GameConfig.STAGE_ROOKIE: return "Rookie"
+		GameConfig.STAGE_CHAMPION: return "Champion"
+		GameConfig.STAGE_ULTIMATE: return "Ultimate"
+		GameConfig.STAGE_MEGA: return "Mega"
 		_: return "Unknown"
 
 
@@ -307,3 +353,36 @@ func _input(event: InputEvent) -> void:
 		if EventBus:
 			EventBus.tower_selected.emit(null)
 		close()
+
+
+## Cleanup when removed from scene tree
+func _exit_tree() -> void:
+	# Disconnect button signals
+	if cycle_target_btn and cycle_target_btn.pressed.is_connected(_on_cycle_target_pressed):
+		cycle_target_btn.pressed.disconnect(_on_cycle_target_pressed)
+
+	if level_up_btn and level_up_btn.pressed.is_connected(_on_level_up_pressed):
+		level_up_btn.pressed.disconnect(_on_level_up_pressed)
+
+	if digivolve_btn and digivolve_btn.pressed.is_connected(_on_digivolve_pressed):
+		digivolve_btn.pressed.disconnect(_on_digivolve_pressed)
+
+	if merge_btn and merge_btn.pressed.is_connected(_on_merge_pressed):
+		merge_btn.pressed.disconnect(_on_merge_pressed)
+
+	if sell_btn and sell_btn.pressed.is_connected(_on_sell_pressed):
+		sell_btn.pressed.disconnect(_on_sell_pressed)
+
+	# Disconnect EventBus signals
+	if EventBus and EventBus.tower_selected.is_connected(_on_tower_selected):
+		EventBus.tower_selected.disconnect(_on_tower_selected)
+
+	# Disconnect GameManager signals
+	if GameManager and GameManager.digibytes_changed.is_connected(_on_digibytes_changed):
+		GameManager.digibytes_changed.disconnect(_on_digibytes_changed)
+
+	# Clear references
+	_current_tower = null
+	_economy_system = null
+	_evolution_system = null
+	_merge_system = null

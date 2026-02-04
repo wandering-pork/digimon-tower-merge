@@ -4,6 +4,7 @@ extends Node
 ##
 ## Processes all input for the main level including mouse clicks,
 ## keyboard shortcuts, tower selection/deselection, and menu interactions.
+## Coordinates with TowerPlacementSystem for drag-drop placement mode.
 
 # Grid configuration (must match main level)
 const GRID_COLUMNS: int = 8
@@ -18,6 +19,8 @@ var main_level: Node2D
 # State
 var selected_tower: DigimonTower = null
 var selected_spawn_position: Vector2i = Vector2i(-1, -1)
+var _placement_mode_active: bool = false
+var _merge_mode_active: bool = false
 
 # Signals
 signal spawn_menu_requested(grid_pos: Vector2i)
@@ -27,6 +30,14 @@ signal tower_selection_changed(tower: DigimonTower)
 func _ready() -> void:
 	# Connect to EventBus for tower selection
 	EventBus.tower_selected.connect(_on_tower_selected)
+
+	# Connect to placement mode signals
+	EventBus.placement_mode_started.connect(_on_placement_mode_started)
+	EventBus.placement_mode_ended.connect(_on_placement_mode_ended)
+
+	# Connect to merge mode signals
+	EventBus.merge_mode_entered.connect(_on_merge_mode_entered)
+	EventBus.merge_mode_exited.connect(_on_merge_mode_exited)
 
 
 ## Initialize input handler with required references
@@ -53,18 +64,31 @@ func _input(event: InputEvent) -> void:
 
 func _handle_mouse_button(event: InputEventMouseButton) -> void:
 	## Process mouse button events
+	# Skip if placement mode is active (TowerPlacementSystem handles input)
+	if _placement_mode_active:
+		return
+
+	# Skip spawn menu request if merge mode is active (MergeSelectionHandler handles tower clicks)
+	# The tower_selected signal will still be emitted by the tower itself
+
 	if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		_handle_grid_click(event.position)
 	elif event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
-		# Right click to cancel/close menus
-		if ui_coordinator and ui_coordinator.is_spawn_menu_open():
+		# Right click to cancel/close menus or merge mode
+		if _merge_mode_active:
+			EventBus.merge_cancelled.emit()
+		elif ui_coordinator and ui_coordinator.is_spawn_menu_open():
 			ui_coordinator.close_spawn_menu()
 
 
 func _handle_keyboard_input(event: InputEvent) -> void:
 	## Process keyboard input events
 	if event.is_action_pressed("ui_cancel"):
-		_deselect_tower()
+		# Cancel merge mode if active, otherwise deselect tower
+		if _merge_mode_active:
+			EventBus.merge_cancelled.emit()
+		else:
+			_deselect_tower()
 
 	if event.is_action_pressed("toggle_speed"):
 		GameManager.cycle_game_speed()
@@ -102,9 +126,10 @@ func _handle_grid_click(screen_pos: Vector2) -> void:
 		# Clicked on existing tower - select it
 		EventBus.tower_selected.emit(tower)
 	elif grid_manager.can_place_tower(grid_pos):
-		# Clicked on empty tower slot - request spawn menu
-		selected_spawn_position = grid_pos
-		spawn_menu_requested.emit(grid_pos)
+		# Clicked on empty tower slot - request spawn menu (but not during merge mode)
+		if not _merge_mode_active:
+			selected_spawn_position = grid_pos
+			spawn_menu_requested.emit(grid_pos)
 
 
 func _on_tower_selected(tower: Node) -> void:
@@ -166,3 +191,58 @@ func get_selected_spawn_position() -> Vector2i:
 ## Clear the selected spawn position
 func clear_spawn_position() -> void:
 	selected_spawn_position = Vector2i(-1, -1)
+
+
+# =============================================================================
+# PLACEMENT MODE HANDLERS
+# =============================================================================
+
+func _on_placement_mode_started(_stage: int, _attribute: int, _cost: int) -> void:
+	## Handle entering placement mode
+	_placement_mode_active = true
+	# Deselect current tower when entering placement mode
+	_deselect_tower()
+
+
+func _on_placement_mode_ended() -> void:
+	## Handle exiting placement mode
+	_placement_mode_active = false
+
+
+## Check if placement mode is currently active
+func is_placement_mode_active() -> bool:
+	return _placement_mode_active
+
+
+# =============================================================================
+# MERGE MODE HANDLERS
+# =============================================================================
+
+func _on_merge_mode_entered(_source_tower: Node) -> void:
+	## Handle entering merge mode
+	_merge_mode_active = true
+
+
+func _on_merge_mode_exited() -> void:
+	## Handle exiting merge mode
+	_merge_mode_active = false
+
+
+## Check if merge mode is currently active
+func is_merge_mode_active() -> bool:
+	return _merge_mode_active
+
+
+func _exit_tree() -> void:
+	# Disconnect EventBus signals to prevent memory leaks
+	if EventBus:
+		if EventBus.tower_selected.is_connected(_on_tower_selected):
+			EventBus.tower_selected.disconnect(_on_tower_selected)
+		if EventBus.placement_mode_started.is_connected(_on_placement_mode_started):
+			EventBus.placement_mode_started.disconnect(_on_placement_mode_started)
+		if EventBus.placement_mode_ended.is_connected(_on_placement_mode_ended):
+			EventBus.placement_mode_ended.disconnect(_on_placement_mode_ended)
+		if EventBus.merge_mode_entered.is_connected(_on_merge_mode_entered):
+			EventBus.merge_mode_entered.disconnect(_on_merge_mode_entered)
+		if EventBus.merge_mode_exited.is_connected(_on_merge_mode_exited):
+			EventBus.merge_mode_exited.disconnect(_on_merge_mode_exited)

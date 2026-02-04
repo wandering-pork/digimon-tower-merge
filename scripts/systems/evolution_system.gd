@@ -165,6 +165,9 @@ func execute_evolution(tower: DigimonTower, evolution_path: EvolutionPath) -> vo
 	# Apply evolution
 	tower.evolve_to(new_digimon)
 
+	# Play evolution sound
+	AudioManager.play_sfx("tower_evolve")
+
 	# Emit signals
 	evolution_completed.emit(tower, new_digimon)
 

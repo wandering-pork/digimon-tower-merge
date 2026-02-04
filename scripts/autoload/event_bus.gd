@@ -143,6 +143,38 @@ signal merge_initiated(source_tower: Node)
 ## Emitted when a merge operation is cancelled
 signal merge_cancelled()
 
+## Emitted when merge confirmation is requested (second tower selected)
+## source_tower: The tower to be sacrificed
+## target_tower: The tower to receive DP
+signal merge_confirmation_requested(source_tower: Node, target_tower: Node)
+
+## Emitted when merge mode is entered (first tower selected for merge)
+## source_tower: The tower initiating merge
+signal merge_mode_entered(source_tower: Node)
+
+## Emitted when merge mode is exited without completing merge
+signal merge_mode_exited()
+
+# =============================================================================
+# PLACEMENT SIGNALS
+# =============================================================================
+
+## Emitted when tower placement mode starts (drag-drop from spawn menu)
+## stage: Evolution stage to spawn
+## attribute: Attribute type (-1 for random)
+## cost: DigiBytes cost
+signal placement_mode_started(stage: int, attribute: int, cost: int)
+
+## Emitted when tower placement mode ends (placed or cancelled)
+signal placement_mode_ended()
+
+## Emitted when a tower is successfully placed via drag-drop
+## grid_pos: Where the tower was placed
+## stage: Evolution stage spawned
+## attribute: Attribute type
+## cost: DigiBytes spent
+signal tower_placed_via_dragdrop(grid_pos: Vector2i, stage: int, attribute: int, cost: int)
+
 ## Emitted to show floating text (damage numbers, rewards, etc.)
 ## position: World position to show text
 ## text: The text to display

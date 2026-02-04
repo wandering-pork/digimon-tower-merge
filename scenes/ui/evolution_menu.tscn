@@ -65,6 +65,7 @@ layout_mode = 2
 
 [node name="Footer" type="HBoxContainer" parent="MainVBox"]
 layout_mode = 2
+theme_override_constants/separation = 10
 
 [node name="CostLabel" type="Label" parent="MainVBox/Footer"]
 layout_mode = 2
@@ -73,6 +74,12 @@ theme_override_font_sizes/font_size = 16
 text = "Cost: 100 DB"
 
 [node name="CancelBtn" type="Button" parent="MainVBox/Footer"]
-custom_minimum_size = Vector2(100, 40)
+custom_minimum_size = Vector2(80, 40)
 layout_mode = 2
 text = "Cancel"
+
+[node name="ConfirmBtn" type="Button" parent="MainVBox/Footer"]
+custom_minimum_size = Vector2(140, 40)
+layout_mode = 2
+disabled = true
+text = "SELECT PATH"

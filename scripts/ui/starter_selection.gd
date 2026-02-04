@@ -3,8 +3,13 @@ extends Control
 ## UI screen for selecting the starting Digimon partner.
 ## Displays 8 starter options based on GDD: Koromon, Tsunomon, Tokomon, Gigimon,
 ## Tanemon, DemiVeemon, Pagumon, Viximon.
+##
+## After selection, transitions to the main level scene.
 
 signal starter_selected(digimon_data: DigimonData)
+
+## Scene paths
+const MAIN_LEVEL_SCENE = "res://scenes/levels/main_level.tscn"
 
 ## Starter configuration data
 const STARTERS = [
@@ -169,9 +174,38 @@ func _on_starter_selected(index: int) -> void:
 
 	var data = _starter_data[index]
 	if data:
+		# Store the selected starter for the main level to use
+		_store_selected_starter(data, index)
+
+		# Emit signal for any listeners
 		starter_selected.emit(data)
+
+		# Transition to main level
+		_transition_to_main_level()
 	else:
 		ErrorHandler.log_error("StarterSelection", "No data for starter index: %d" % index)
+
+
+func _store_selected_starter(data: DigimonData, index: int) -> void:
+	## Store the selected starter data for the main level to retrieve
+	## Uses GameManager to hold the selection temporarily
+	# Store in a global accessible location - we'll use a file for persistence
+	var config = ConfigFile.new()
+	config.set_value("starter", "resource_path", STARTERS[index]["resource"])
+	config.set_value("starter", "name", data.digimon_name if data.digimon_name else STARTERS[index]["name"])
+	config.save("user://starter_selection.cfg")
+
+	ErrorHandler.log_info("StarterSelection", "Starter selected: %s" % STARTERS[index]["name"])
+
+
+func _transition_to_main_level() -> void:
+	## Transition to the main level scene
+	if ResourceLoader.exists(MAIN_LEVEL_SCENE):
+		var error = get_tree().change_scene_to_file(MAIN_LEVEL_SCENE)
+		if error != OK:
+			ErrorHandler.log_error("StarterSelection", "Failed to change scene to main level (error: %d)" % error)
+	else:
+		ErrorHandler.log_error("StarterSelection", "Main level scene not found: %s" % MAIN_LEVEL_SCENE)
 
 ## Get the starter DigimonData by index
 func get_starter_data(index: int) -> DigimonData:
@@ -185,3 +219,24 @@ func get_starter_by_name(digimon_name: String) -> DigimonData:
 		if STARTERS[i]["name"].to_lower() == digimon_name.to_lower():
 			return _starter_data[i]
 	return null
+
+
+## Cleanup when removed from scene tree
+func _exit_tree() -> void:
+	# Disconnect select buttons from starter cards
+	for i in range(STARTERS.size()):
+		var card_name = "Starter%d" % (i + 1)
+		var card = starter_grid.get_node_or_null(card_name) if starter_grid else null
+		if not card:
+			continue
+
+		var vbox = card.get_node_or_null("VBox")
+		if not vbox:
+			continue
+
+		var select_btn = vbox.get_node_or_null("SelectBtn")
+		if select_btn and select_btn.pressed.is_connected(_on_starter_selected):
+			select_btn.pressed.disconnect(_on_starter_selected)
+
+	# Clear references
+	_starter_data.clear()

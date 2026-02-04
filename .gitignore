@@ -1,6 +1,9 @@
 # Godot 4+ specific ignores
 .godot/
 
+# Godot 4.4+ UID cache files
+*.uid
+
 # Godot-specific ignores
 *.translation
 

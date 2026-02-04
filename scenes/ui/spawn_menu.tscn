@@ -156,6 +156,12 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "SPAWN"
 
+[node name="PlaceBtn" type="Button" parent="MarginContainer/VBoxContainer/Actions"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+text = "DRAG TO PLACE"
+
 [node name="CancelBtn" type="Button" parent="MarginContainer/VBoxContainer/Actions"]
 layout_mode = 2
 size_flags_horizontal = 3
